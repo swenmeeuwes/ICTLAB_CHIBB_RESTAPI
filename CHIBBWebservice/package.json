@@ -1,15 +1,16 @@
 {
-    "name": "chibb_webservice",
-    "version": "0.0.1",
-    "private": true,
-    "description": "A RESTful API for the CHIBB project",
-    "author": "Swen Meeuwes <swenmeeu@gmail.com>",
-    "scripts": {
-        "start": "node main.js"
-    },
-    "main": "main.js",
-    "license": "MIT",
-    "dependencies": {
-        "express": "^4.14.1"
-    }
+  "name": "chibb_webservice",
+  "version": "0.0.1",
+  "private": true,
+  "description": "A RESTful API for the CHIBB project",
+  "author": "Swen Meeuwes <swenmeeu@gmail.com>",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "main": "main.js",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1"
+  }
 }

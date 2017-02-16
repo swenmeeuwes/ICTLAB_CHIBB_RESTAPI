@@ -1,0 +1,2 @@
+# ICTLAB_CHIBB_RESTAPI
+A REST API for the CHIBB project

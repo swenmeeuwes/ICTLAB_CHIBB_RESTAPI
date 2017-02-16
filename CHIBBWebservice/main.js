@@ -4,6 +4,7 @@
  * @author Swen Meeuwes
  **/
 
+var config = require('config');
 var express = require('express');
 var bodyParser = require('body-parser');
 
@@ -11,13 +12,18 @@ var routes = require('./routes/router');
 
 var app = express();
 
-app.use(bodyParser.json());       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({// to support URL-encoded bodies
+app.use(bodyParser.json());       // Support JSON-encoded bodies
+app.use(bodyParser.urlencoded({   // Support URL-encoded bodies
     extended: true
 }));
 
+// Let 'router.js' handle the routing
 app.use('/', routes);
 
-app.listen(8081, function () {
-    console.log('Example app listening on port 8081!');
+// Listen at port defined in the config
+var webservice = app.listen(config.get('webservice.port'), function () {
+    var host = webservice.address().address;
+    var port = webservice.address().port;
+
+    console.log('CHIBB RESTful webservice listening at: %s:%s', host, port);
 });

@@ -2,6 +2,8 @@
  * sensor-controller.js
  * Created on 16-02-2017
  * @author Swen Meeuwes
+ * 
+ * To-do: Wrapper (module?) + Response messages with http code + result
  **/
 
 var express = require('express');
@@ -24,7 +26,6 @@ router.post('/', function (req, res) {
 });
 
 // READ
-// To-do: Add wrapper
 router.get('/:id', function (req, res) {
     console.log("[SensorController] GET HTTP request received from %s", req.ip);
 

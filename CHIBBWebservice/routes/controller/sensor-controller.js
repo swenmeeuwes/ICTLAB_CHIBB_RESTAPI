@@ -2,6 +2,10 @@
  * sensor-controller.js
  * Created on 16-02-2017
  * @author Swen Meeuwes
+ * 
+ * // FOR ALL HTTP REQUESTS: Should probably set header?
+ * res.setHeader('content-type', 'text/plain'); but json
+ * USE res.json instead of res.send ?
  **/
 
 var express = require('express');
@@ -11,7 +15,7 @@ var neo4j = require('neo4j-driver').v1;
 var driver = require('./../../database/driver');
 var session = driver.session();
 
-var wrapper = require('./response-wrapper');
+var wrapper = require('../model/response-wrapper');
 
 // CRUD
 // CREATE
@@ -37,12 +41,12 @@ router.get('/:id', function (req, res) {
             return item._fields[0].properties; // Extract fields from the record
         });
         var statusCode = recordFieldObjects.length > 0 ? 200 : 204;
-        res.status(statusCode);
-        // Should probably set header?
-//        res.setHeader('content-type', 'text/plain');
+        res.status(statusCode); // if this is 204, there is no body. Do we want this?
         res.send(wrapper(statusCode, recordFieldObjects.length > 0 ? "OK" : "No content", recordFieldObjects));
     }, function (errorMessage, errorCode) {
-        res.send(wrapper(errorCode, errorMessage));
+        // Service unavailable
+        res.status(503);
+        res.send(wrapper(503, errorMessage));
     });
 });
 
@@ -62,7 +66,9 @@ router.put('/:id', function (req, res) {
         res.status(404);
         res.send(wrapper(404, "Not found"));
     }, function (errorMessage, errorCode) {
-        res.send(wrapper(errorCode, errorMessage));
+        // Service unavailable
+        res.status(503);
+        res.send(wrapper(503, errorMessage));
     });
 });
 

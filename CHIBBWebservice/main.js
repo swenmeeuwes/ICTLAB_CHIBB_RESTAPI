@@ -12,6 +12,7 @@ var routes = require('./routes/router');
 
 var app = express();
 
+// BodyParser configuration
 app.use(bodyParser.json());       // Support JSON-encoded bodies
 app.use(bodyParser.urlencoded({   // Support URL-encoded bodies
     extended: true

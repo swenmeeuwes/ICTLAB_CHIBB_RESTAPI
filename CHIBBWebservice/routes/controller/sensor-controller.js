@@ -11,6 +11,9 @@
 var express = require('express');
 var router = express.Router();
 
+var config = require('config');
+var jwt = require('jsonwebtoken');
+
 var neo4j = require('neo4j-driver').v1;
 var driver = require('./../../database/driver');
 var session = driver.session();
@@ -21,6 +24,17 @@ var wrapper = require('../model/response-wrapper');
 // CREATE
 router.post('/', function (req, res) {
     console.log("[SensorController] POST HTTP request received from %s", req.ip);
+    
+    var token = req.query.token;
+    var username;
+    jwt.verify(token, config.get('token.secret'), function (error, decoded) {
+        if (error) {
+            res.status(403);
+            res.json(wrapper(403, "Forbidden"));
+        } else {
+            username = decoded.username;
+        }
+    });
 
     session
             .run("CREATE (s:Sensor {id: {id}, type: {type}});", req.body)
@@ -33,9 +47,20 @@ router.post('/', function (req, res) {
 // READ
 router.get('/:id', function (req, res) {
     console.log("[SensorController] GET HTTP request received from %s", req.ip);
+    
+    var token = req.query.token;
+    var username;
+    jwt.verify(token, config.get('token.secret'), function (error, decoded) {
+        if (error) {
+            res.status(403);
+            res.json(wrapper(403, "Forbidden"));
+        } else {
+            username = decoded.username;
+        }
+    });
 
-    var result = session.run("MATCH (s:Sensor) WHERE s.id = {id} RETURN s AS Sensor;", {id: req.params.id});
-    result.then(function (result) {
+    var sensor = session.run("MATCH (s:Sensor) WHERE s.id = {id} RETURN s AS Sensor;", {id: req.params.id});
+    sensor.then(function (result) {
         var records = result.records;
         var recordFieldObjects = records.map(function (item) {
             return item._fields[0].properties; // Extract fields from the record

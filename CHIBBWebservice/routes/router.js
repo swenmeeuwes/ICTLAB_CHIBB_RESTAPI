@@ -11,7 +11,7 @@ var wrapper = require('./model/response-wrapper');
 // Forbid root requests
 router.get('/', function (req, res) {
     res.status(403);
-    res.json({message: 'Welcome to the coolest API on earth!'});
+    res.json(wrapper(403, "Forbidden"));
 });
 
 // Define route controllers here

@@ -24,7 +24,7 @@ var wrapper = require('../model/response-wrapper');
 // CREATE
 router.post('/', function (req, res) {
     console.log("[SensorController] POST HTTP request received from %s", req.ip);
-    
+
     var token = req.query.token;
     var username;
     jwt.verify(token, config.get('token.secret'), function (error, decoded) {
@@ -36,9 +36,14 @@ router.post('/', function (req, res) {
         }
     });
 
+    // TO-DO: CHECK IF USER EXSIST FIRST!
+
     session
-            .run("CREATE (s:Sensor {id: {id}, type: {type}});", req.body)
+            .run("CREATE (s:Sensor {uid: {id}, type: {type}});", req.body)
             .then(function () {
+                session.run("MATCH (s:Sensor), (u:User) WHERE s.uid = {sensorID} AND s.type = {sensorType} AND u.username = {username} CREATE (u)-[r:Owns]->(s);",
+                        {sensorID: req.body.id, sensorType: req.body.type, username: username});
+
                 res.status(201);
                 res.send(wrapper(201, "Created", req.body));
             });
@@ -47,7 +52,38 @@ router.post('/', function (req, res) {
 // READ
 router.get('/:id', function (req, res) {
     console.log("[SensorController] GET HTTP request received from %s", req.ip);
-    
+
+    var token = req.query.token;
+    jwt.verify(token, config.get('token.secret'), function (error, decoded) {
+        if (error) {
+            res.status(403);
+            res.json(wrapper(403, "Forbidden"));
+        } else {
+            var username = decoded.username;
+
+            var sensor = session.run("MATCH (u:User{username: {username}})-[r:Owns]->(s:Sensor{uid: {id}}) RETURN s AS Sensor;", {username: username, id: req.params.id});
+            sensor.then(function (result) {
+                var records = result.records;
+                var recordFieldObjects = records.map(function (item) {
+                    return item._fields[0].properties; // Extract fields from the record
+                });
+                var statusCode = recordFieldObjects.length > 0 ? 200 : 204;
+                res.status(statusCode); // if this is 204, there is no body. Do we want this?
+                res.send(wrapper(statusCode, recordFieldObjects.length > 0 ? "OK" : "No content", recordFieldObjects));
+            }, function (errorMessage, errorCode) {
+                // Service unavailable
+                res.status(503);
+                res.send(wrapper(503, errorMessage));
+            });
+        }
+    });
+});
+
+// UPDATE
+// TODO (With authentication/ relationship)
+router.put('/:id', function (req, res) {
+    console.log("[SensorController] PUT HTTP request received from %s", req.ip);
+
     var token = req.query.token;
     var username;
     jwt.verify(token, config.get('token.secret'), function (error, decoded) {
@@ -59,30 +95,11 @@ router.get('/:id', function (req, res) {
         }
     });
 
-    var sensor = session.run("MATCH (s:Sensor) WHERE s.id = {id} RETURN s AS Sensor;", {id: req.params.id});
-    sensor.then(function (result) {
-        var records = result.records;
-        var recordFieldObjects = records.map(function (item) {
-            return item._fields[0].properties; // Extract fields from the record
-        });
-        var statusCode = recordFieldObjects.length > 0 ? 200 : 204;
-        res.status(statusCode); // if this is 204, there is no body. Do we want this?
-        res.send(wrapper(statusCode, recordFieldObjects.length > 0 ? "OK" : "No content", recordFieldObjects));
-    }, function (errorMessage, errorCode) {
-        // Service unavailable
-        res.status(503);
-        res.send(wrapper(503, errorMessage));
-    });
-});
-
-// UPDATE
-router.put('/:id', function (req, res) {
-    console.log("[SensorController] PUT HTTP request received from %s", req.ip);
-
     var queryParams = req.body;
     queryParams.id = req.params.id;
-
-    var updatedSensors = session.run("MATCH (s:Sensor) WHERE s.id = {id} SET s.type = {type} RETURN s AS Sensor;", queryParams);
+    
+    // ADD RELATIONSHIP
+    var updatedSensors = session.run("MATCH (s:Sensor) WHERE s.uid = {id} SET s.type = {type} RETURN s AS Sensor;", queryParams);
     updatedSensors.then(function (result) {
         if (result.records.length > 0) {
             res.status(200);
@@ -101,12 +118,21 @@ router.put('/:id', function (req, res) {
 router.delete('/:id', function (req, res) {
     console.log("[SensorController] DELETE HTTP request received from %s", req.ip);
 
-    session
-            .run("MATCH (s:Sensor) WHERE s.id = {id} DETACH DELETE s;", {id: req.params.id})
-            .then(function () {
-                res.status(200);
-                res.send(wrapper(200, "OK"));
-            });
+    var token = req.query.token;
+    jwt.verify(token, config.get('token.secret'), function (error, decoded) {
+        if (error) {
+            res.status(403);
+            res.json(wrapper(403, "Forbidden"));
+        } else {
+            var username = decoded.username;
+            session
+                    .run("MATCH (u:User{username: {username}})-[:Owns]->(s:Sensor{uid: {id}}) DETACH DELETE s;", {username: username, id: req.params.id})
+                    .then(function () {
+                        res.status(200);
+                        res.send(wrapper(200, "OK"));
+                    });
+        }
+    });
 });
 
 module.exports = router;

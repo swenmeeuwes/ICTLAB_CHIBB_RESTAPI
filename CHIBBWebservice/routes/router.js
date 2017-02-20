@@ -17,5 +17,6 @@ router.get('/', function (req, res) {
 // Define route controllers here
 router.use('/sensor', require('./controller/sensor-controller'));
 router.use('/token', require('./controller/token-controller'));
+router.use('/user', require('./controller/user-controller'));
 
 module.exports = router;

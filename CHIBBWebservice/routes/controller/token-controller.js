@@ -9,7 +9,7 @@ var config = require('config');
 var express = require('express');
 var router = express.Router();
 
-var jwt = require('json-web-token');
+var jwt = require('jsonwebtoken');
 
 var neo4j = require('neo4j-driver').v1;
 var driver = require('./../../database/driver');
@@ -20,15 +20,23 @@ var wrapper = require('../model/response-wrapper');
 router.get('/', function (req, res) {
     console.log("[TokenController] GET HTTP request received from %s", req.ip);
 
+    // IF user not valid
+    if (false) {
+        res.status(403);
+        res.json(wrapper(403, "Forbidden"));
+    }
 
-    var token = jwt.encode(config.get('token.secret'), {"username": "Bob"}, 'sha256');
+    // IF user valid
+    var username = "HENK";
+    var usersecret = "asdada";
 
-    // return the information including token as JSON
-    res.json({
-        success: true,
-        message: 'Enjoy your token!',
-        token: token
-    });
+    var token = jwt.sign({
+        username: username,
+        usersecret: usersecret
+    }, config.get('token.secret'), {expiresIn: '1h'});
+
+    res.status(200);
+    res.json(wrapper(200, "OK", {token: token}));
 });
 
 router.post('/', function (req, res) {
@@ -36,17 +44,11 @@ router.post('/', function (req, res) {
 
     var token = req.body.token;
 
-    jwt.decode(config.get('token.secret'), token, function (error, decodedPayload, decodedHeader) {
+    jwt.verify(token, config.get('token.secret'), function (error, decoded) {
         if (error) {
-            res.json({
-                success: false,
-                message: 'ACCESS DENIED!'
-            });
+            res.json(wrapper(403, "Forbidden"));
         } else {
-            res.json({
-                success: true,
-                message: 'ACCESS GRANTED!'
-            });
+            res.json(wrapper(200, "OK"));
         }
     });
 });

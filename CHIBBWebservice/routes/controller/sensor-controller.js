@@ -33,20 +33,15 @@ router.post('/', function (req, res) {
             res.json(wrapper(403, "Forbidden"));
         } else {
             username = decoded.username;
+
+            session
+                    .run("MATCH (u:User {username:{username}}) CREATE ((u) -[r:Owns]-> (s:Sensor{uid:{id},type:{type}}));", {username: username, id: req.body.id, type: req.body.type})
+                    .then(function () {
+                        res.status(201);
+                        res.send(wrapper(201, "Created", req.body));
+                    });
         }
     });
-
-    // TO-DO: CHECK IF USER EXSIST FIRST!
-
-    session
-            .run("CREATE (s:Sensor {uid: {id}, type: {type}});", req.body)
-            .then(function () {
-                session.run("MATCH (s:Sensor), (u:User) WHERE s.uid = {sensorID} AND s.type = {sensorType} AND u.username = {username} CREATE (u)-[r:Owns]->(s);",
-                        {sensorID: req.body.id, sensorType: req.body.type, username: username});
-
-                res.status(201);
-                res.send(wrapper(201, "Created", req.body));
-            });
 });
 
 // READ
@@ -97,7 +92,7 @@ router.put('/:id', function (req, res) {
 
     var queryParams = req.body;
     queryParams.id = req.params.id;
-    
+
     // ADD RELATIONSHIP
     var updatedSensors = session.run("MATCH (s:Sensor) WHERE s.uid = {id} SET s.type = {type} RETURN s AS Sensor;", queryParams);
     updatedSensors.then(function (result) {

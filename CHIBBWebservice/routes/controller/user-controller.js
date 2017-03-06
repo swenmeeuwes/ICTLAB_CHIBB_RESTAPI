@@ -59,6 +59,8 @@ router.post("/login", function (req, res) {
             var hashedPassword = SHA256(password + recordFieldObjects[0].salt).toString();
             if (recordFieldObjects[0].password === hashedPassword) {
                 // Password is correct, provide token
+                var timestamp = Date.now();
+                console.log(timestamp);
                 var token = jwt.sign({
                     username: username,
                     usersecret: requestBody.secret

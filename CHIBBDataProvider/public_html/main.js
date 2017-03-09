@@ -18,7 +18,7 @@ function sendDummyData() {
     };
 
     var options = {
-        url: 'https://localhost:8081/record',
+        url: 'http://127.0.0.1:8081/record',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

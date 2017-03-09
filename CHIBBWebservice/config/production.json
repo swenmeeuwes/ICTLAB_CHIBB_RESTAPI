@@ -1,12 +1,15 @@
 {
     "dbConfig": {
         "protocol": "bolt",
-        "host": "<FILL>",
+        "host": "localhost",
         "port": "7687",
-        "user": "neo4j",
-        "password": "admin"
+        "user": "set-while-building",
+        "password": "set-while-building"
     },
     "webservice": {
-        "port": 8081
+        "port": 443
+    },
+    "token": {
+        "secret": "7KsllmtIVIpO"
     }
 }

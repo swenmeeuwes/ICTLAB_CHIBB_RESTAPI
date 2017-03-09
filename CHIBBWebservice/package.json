@@ -5,6 +5,7 @@
   "description": "A RESTful API for the CHIBB project",
   "author": "Swen Meeuwes <swenmeeu@gmail.com>",
   "scripts": {
+    "install": "npm install",
     "start": "node main.js"
   },
   "main": "main.js",

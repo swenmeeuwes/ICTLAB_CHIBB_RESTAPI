@@ -35,7 +35,7 @@ router.post('/', function (req, res) {
             username = decoded.username;
 
             session
-                    .run("MATCH (u:User {username:{username}}) CREATE ((u) -[r:Owns]-> (s:Sensor{uid:{id},type:{type}}));", {username: username, id: req.body.id, type: req.body.type})
+                    .run("MATCH (u:User {username:{username}}) CREATE ((u) -[r:Owns]-> (s:Sensor{uid:{id},type:{type},attributes:{attributes}}));", {username: username, id: req.body.id, type: req.body.type, attributes: req.body.attributes})
                     .then(function () {
                         res.status(201);
                         res.send(wrapper(201, "Created", req.body));

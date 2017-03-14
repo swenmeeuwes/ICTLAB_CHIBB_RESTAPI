@@ -8,6 +8,8 @@
   },
   "author": "Swen Meeuwes",
   "dependencies": {
+    "config": "^1.25.1",
+    "proc-noise": "0.0.1",
     "request": "^2.80.0"
   }
 }

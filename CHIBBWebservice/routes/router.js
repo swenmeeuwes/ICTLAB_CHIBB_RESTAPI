@@ -19,5 +19,6 @@ router.use('/sensor', require('./controller/sensor-controller'));
 router.use('/token', require('./controller/token-controller'));
 router.use('/user', require('./controller/user-controller'));
 router.use('/record', require('./controller/record-controller'))
+router.use('/house', require('./controller/house-controller'))
 
 module.exports = router;

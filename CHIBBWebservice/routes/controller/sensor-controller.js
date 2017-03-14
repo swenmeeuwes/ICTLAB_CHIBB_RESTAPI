@@ -33,13 +33,32 @@ router.post('/', function (req, res) {
             res.json(wrapper(403, "Forbidden"));
         } else {
             username = decoded.username;
-
-            session
-                    .run("MATCH (u:User {username:{username}}) CREATE ((u) -[r:Owns]-> (s:Sensor{uid:{id},type:{type},attributes:{attributes}}));", {username: username, id: req.body.id, type: req.body.type, attributes: req.body.attributes})
+            var house = session.run("MATCH (u:User{username:{username}})-[:Owns]->(h:House{uid:{id}}) RETURN h AS House;", {username: username, id: req.body.hid});
+            house.then(function (result) {
+                var records = result.records;
+                var recordFieldObjects = records.map(function (item) {
+                    return item._fields[0].properties; // Extract fields from the record
+                });
+                if(recordFieldObjects.length > 0){
+                    session
+                    .run("MATCH (h:House {uid:{hid}}) CREATE ((h) -[r:Has]-> (s:Sensor{uid:{sid},type:{type},attributes:{attributes}}));", {hid: req.body.hid, sid: req.body.sid, type: req.body.type, attributes: req.body.attributes})
                     .then(function () {
                         res.status(201);
                         res.send(wrapper(201, "Created", req.body));
                     });
+                }
+                else {
+                    res.status(404);
+                    res.send(wrapper(404, "Given House doesn't exist or is not yours!"));
+                }
+            }, function (errorMessage, errorCode) {
+                // Service unavailable
+                res.status(503);
+                res.send(wrapper(503, errorMessage));
+            });
+            
+
+            
         }
     });
 });
@@ -56,7 +75,7 @@ router.get('/:id', function (req, res) {
         } else {
             var username = decoded.username;
 
-            var sensor = session.run("MATCH (u:User{username: {username}})-[r:Owns]->(s:Sensor{uid: {id}}) RETURN s AS Sensor;", {username: username, id: req.params.id});
+            var sensor = session.run("MATCH (u:User{username: {username}})-[r:Owns]->(h:House)-[r1:Has]->(s:Sensor{uid: {id}}) RETURN s AS Sensor;", {username: username, id: req.params.id});
             sensor.then(function (result) {
                 var records = result.records;
                 var recordFieldObjects = records.map(function (item) {
@@ -121,7 +140,7 @@ router.delete('/:id', function (req, res) {
         } else {
             var username = decoded.username;
             session
-                    .run("MATCH (u:User{username: {username}})-[:Owns]->(s:Sensor{uid: {id}}) DETACH DELETE s;", {username: username, id: req.params.id})
+                    .run("MATCH (u:User{username: {username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor{uid: {id}})-[:Has_record]->(allRelatedNodes) DETACH DELETE s, allRelatedNodes;", {username: username, id: req.params.id})
                     .then(function () {
                         res.status(200);
                         res.send(wrapper(200, "OK"));

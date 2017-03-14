@@ -49,7 +49,7 @@ router.post('/', function (req, res) {
                 }
                 else {
                     res.status(404);
-                    res.send(wrapper(404, "Given House doesn't exist or is not yours!"));
+                    res.send(wrapper(404, "Not found", {errorMessage: "Given House doesn't exist or is not yours!"}));
                 }
             }, function (errorMessage, errorCode) {
                 // Service unavailable

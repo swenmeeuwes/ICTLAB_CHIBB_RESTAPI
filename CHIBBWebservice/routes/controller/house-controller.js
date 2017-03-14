@@ -39,5 +39,45 @@ router.post("/", function (req, res) {
     });
 });
 
+router.delete("/:id", function(req, res){
+    console.log("[HouseController] DELETE HTTP request received from %s", req.ip);
+
+    var token = req.query.token;
+    var username;
+    jwt.verify(token, config.get('token.secret'), function (error, decoded) {
+        if (error) {
+            res.status(403);
+            res.json(wrapper(403, "Forbidden"));
+        } else {
+            username = decoded.username;
+            
+            var house = session.run("MATCH (u:User{username:{username}})-[:Owns]->(h:House{uid:{id}}) RETURN h AS House;", {username: username, id: req.params.id});
+            house.then(function (result) {
+                var records = result.records;
+                var recordFieldObjects = records.map(function (item) {
+                    return item._fields[0].properties; // Extract fields from the record
+                });
+                if(recordFieldObjects.length > 0){
+                    session
+                    .run("MATCH (u:User {username:{username}})-[:Owns]->(h:House {uid: {hid}})-[:Has]-> (allSensors) -[:Has_record]-> (allRecords) DETACH DELETE h, allSensors, allRecords;", {username: username, hid: req.params.id})
+                    .then(function () {
+                        res.status(202);
+                        res.send(wrapper(202, "Accepted", req.body));
+                    });
+                }
+                else {
+                    res.status(404);
+                    res.send(wrapper(404, "Not found", {errorMessage: "Given House doesn't exist or is not yours!"}));
+                }
+            }, function (errorMessage, errorCode) {
+                // Service unavailable
+                res.status(503);
+                res.send(wrapper(503, errorMessage));
+
+            });
+        }
+    });
+});
+
 
 module.exports = router;

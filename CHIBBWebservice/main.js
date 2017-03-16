@@ -7,10 +7,14 @@
 var config = require('config');
 var express = require('express');
 var bodyParser = require('body-parser');
+var cors = require('cors');
 
 var routes = require('./routes/router');
 
 var app = express();
+
+// Allow CORS requests for now, should handle this on route level
+app.use(cors());
 
 // BodyParser configuration
 app.use(bodyParser.json());       // Support JSON-encoded bodies

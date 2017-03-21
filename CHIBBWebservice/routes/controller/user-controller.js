@@ -28,13 +28,26 @@ router.post("/register", function (req, res) {
     var password = SHA256(requestBody.password + salt).toString();
 
     console.log("[UserController] POST HTTP request received from %s", req.ip);
-
-    session
-            .run("CREATE (u:User {username: {username}, email: {email}, password: {password}, secret: {secret}, salt: {salt}});",
-                    {username: requestBody.username, email: requestBody.email, password: password, secret: secret, salt: salt})
-            .then(function () {
-                res.send(wrapper(201, "Created"));
-            });
+    
+    var user = session.run("MATCH (u:User) WHERE u.username = {username} RETURN u;", {username: requestBody.username});
+    user.then(function (result) {
+        var records = result.records;
+        var recordFieldObjects = records.map(function (item) {
+            return item._fields[0].properties; // Extract fields from the record
+        });
+        if (recordFieldObjects.length > 0) {
+            res.status(400);
+            res.send(wrapper(400, "Bad Request", {message: "User already exists!"}));
+        } else {
+            // No such user exists, so create new user
+            session
+                    .run("CREATE (u:User {username: {username}, email: {email}, password: {password}, secret: {secret}, salt: {salt}});",
+                            {username: requestBody.username, email: requestBody.email, password: password, secret: secret, salt: salt})
+                    .then(function () {
+                        res.send(wrapper(201, "Created"));
+                    });
+        }
+    });   
 });
 
 router.post("/login", function (req, res) {

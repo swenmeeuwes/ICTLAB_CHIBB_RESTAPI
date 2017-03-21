@@ -63,7 +63,37 @@ router.post('/', function (req, res) {
     });
 });
 
-// READ
+// READ ALL
+router.get('/', function (req, res) {
+    console.log("[SensorController] GET HTTP request received from %s", req.ip);
+
+    var token = req.query.token;
+    jwt.verify(token, config.get('token.secret'), function (error, decoded) {
+        if (error) {
+            res.status(403);
+            res.json(wrapper(403, "Forbidden"));
+        } else {
+            var username = decoded.username;
+
+            var sensor = session.run("MATCH (u:User{username: {username}})-[r:Owns]->(h:House)-[r1:Has]->(s:Sensor) RETURN s AS Sensor;", {username: username, id: req.params.id});
+            sensor.then(function (result) {
+                var records = result.records;
+                var recordFieldObjects = records.map(function (item) {
+                    return item._fields[0].properties; // Extract fields from the record
+                });
+                var statusCode = recordFieldObjects.length > 0 ? 200 : 204;
+                res.status(statusCode); // if this is 204, there is no body. Do we want this?
+                res.send(wrapper(statusCode, recordFieldObjects.length > 0 ? "OK" : "No content", recordFieldObjects));
+            }, function (errorMessage, errorCode) {
+                // Service unavailable
+                res.status(503);
+                res.send(wrapper(503, errorMessage));
+            });
+        }
+    });
+});
+
+// READ BY ID
 router.get('/:id', function (req, res) {
     console.log("[SensorController] GET HTTP request received from %s", req.ip);
 

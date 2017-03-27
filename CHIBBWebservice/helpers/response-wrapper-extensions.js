@@ -9,6 +9,8 @@
 
 var express = require("express");
 
+// 2xx Success
+// 200 OK
 express.response.ok = function (resultBody) {
     var response = {};
     response.statusCode = 200;
@@ -20,6 +22,21 @@ express.response.ok = function (resultBody) {
     this.json(response);
 };
 
+// 4xx Client errors
+// 400 Bad Request
+express.response.badrequest = function (additionalMessage) {
+    var response = {};
+    response.statusCode = 400;
+    response.statusMessage = "Bad Request";
+    
+    if(additionalMessage)
+        response.message = additionalMessage;
+    
+    this.status(response.statusCode);
+    this.json(response);
+};
+
+// 401 Unauthorized
 express.response.unauthorized = function (additionalMessage) {
     var response = {};
     response.statusCode = 401;

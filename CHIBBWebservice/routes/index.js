@@ -7,3 +7,4 @@
  **/
 
 exports.house = require('./house');
+exports.user = require('./user');

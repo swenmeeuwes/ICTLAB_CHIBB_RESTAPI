@@ -17,7 +17,7 @@ module.exports = function (req, res, next) {
     jwt.verify(token, secret, function (error, decoded) {
         if (error) {
             // Request is unauthorized
-            res.unauthorized(error);
+            res.unauthorized(error.message);
         } else if (decoded) {
             // Request is authorized and valid
             // Pass local variables, see: 'http://expressjs.com/en/api.html#res.locals'.

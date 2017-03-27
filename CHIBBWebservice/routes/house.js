@@ -6,12 +6,19 @@
  * API house route
  **/
 
+var express = require('express');
+var router = express.Router();
+
 var dbConnector = require('../database/database-connector');
 
-var house = {};
+// middleware that is specific to this router
+//router.use(function timeLog (req, res, next) {
+//  console.log('Time: ', Date.now())
+//  next()
+//});
 
-house.getAll = function(req, res) {
-//    console.log(dbConnector.getSession());
-};
+router.get('/', function(req, res) {
+    res.testsend("yo");
+});
 
-module.exports = house;
+module.exports = router;

@@ -11,5 +11,5 @@ var routes = require('./routes');
 
 exports.configure = function(router) {   
     // Add routes here
-    router.get('/house', isAuthenticated, routes.house.getAll);
+    router.use('/house', isAuthenticated, routes.house);
 };

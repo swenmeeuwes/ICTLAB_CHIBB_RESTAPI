@@ -1,0 +1,15 @@
+{
+    "dbConfig": {
+        "protocol": "bolt",
+        "host": "localhost",
+        "port": "7687",
+        "user": "set-while-building",
+        "password": "set-while-building"
+    },
+    "webservice": {
+        "port": 443
+    },
+    "token": {
+        "secret": "7KsllmtIVIpO"
+    }
+}

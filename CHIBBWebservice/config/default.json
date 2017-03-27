@@ -8,8 +8,5 @@
     },
     "webservice": {
         "port": 8081
-    },
-    "token": {
-        "secret": "yeaaaaaaaaaaaaaaaaboiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"
     }
 }

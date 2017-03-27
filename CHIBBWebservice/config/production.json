@@ -8,8 +8,5 @@
     },
     "webservice": {
         "port": 443
-    },
-    "token": {
-        "secret": "7KsllmtIVIpO"
     }
 }

@@ -16,8 +16,10 @@ express.response.ok = function (resultBody) {
     response.statusCode = 200;
     response.statusMessage = "OK";
     response.result = resultBody;
-    response.resultLength = resultBody.length ? resultBody.length : 0;
-    
+
+    if (resultBody.length)
+        response.resultLength = resultBody.length;
+
     this.status(response.statusCode);
     this.json(response);
 };
@@ -28,10 +30,10 @@ express.response.badrequest = function (additionalMessage) {
     var response = {};
     response.statusCode = 400;
     response.statusMessage = "Bad Request";
-    
-    if(additionalMessage)
+
+    if (additionalMessage)
         response.message = additionalMessage;
-    
+
     this.status(response.statusCode);
     this.json(response);
 };
@@ -41,10 +43,10 @@ express.response.unauthorized = function (additionalMessage) {
     var response = {};
     response.statusCode = 401;
     response.statusMessage = "Unauthorized";
-    
-    if(additionalMessage)
+
+    if (additionalMessage)
         response.message = additionalMessage;
-    
+
     this.status(response.statusCode);
     this.json(response);
 };

@@ -4,15 +4,18 @@
  * @author Swen Meeuwes
  **/
 
-var config = require('config');
 var express = require('express');
+
+var config = require('config');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 
 var routeContext = require('./route-context');
 
+// Use (custom) extension methods for the response object
+var responseWrapper = require('./helpers/response-wrapper-extensions');
+
 var app = express();
-//var api = express.Router();
 
 // Allow CORS requests for now, should handle this on route level
 app.use(cors());
@@ -22,7 +25,6 @@ app.use(bodyParser.json());       // Support JSON-encoded bodies
 app.use(bodyParser.urlencoded({   // Support URL-encoded bodies
     extended: true
 }));
-app.use(require('http-responses')); // Use standarized http-responses
 
 // Let 'router-context' configure the routing
 routeContext.configure(app);

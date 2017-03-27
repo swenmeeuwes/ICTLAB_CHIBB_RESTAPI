@@ -18,7 +18,7 @@ var dbConnector = require('../database/database-connector');
 //});
 
 router.get('/', function(req, res) {
-    res.testsend("yo");
+    res.ok(["yo"]);
 });
 
 module.exports = router;

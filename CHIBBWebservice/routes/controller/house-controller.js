@@ -76,7 +76,7 @@ router.delete("/:id", function(req, res){
                 });
                 if(recordFieldObjects.length > 0){
                     session
-                    .run("MATCH (u:User {username:{username}})-[:Owns]->(h:House {uid: {hid}})-[:Has]-> (allSensors) -[:Has_record]-> (allRecords) DETACH DELETE h, allSensors, allRecords;", {username: username, hid: req.params.id})
+                    .run("MATCH (u:User {username:{username}}), (h:House {uid:{hid}}) OPTIONAL MATCH (u)-[:Owns]-> (h) -[:Has]-> (allSensors) -[:Has_record]-> (allRecords) DETACH DELETE h, allSensors, allRecords;", {username: username, hid: req.params.id})
                     .then(function () {
                         res.status(202);
                         res.send(wrapper(202, "Accepted", req.body));

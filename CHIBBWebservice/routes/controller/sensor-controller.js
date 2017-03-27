@@ -39,12 +39,27 @@ router.post('/', function (req, res) {
                 var recordFieldObjects = records.map(function (item) {
                     return item._fields[0].properties; // Extract fields from the record
                 });
-                if(recordFieldObjects.length > 0){
-                    session
-                    .run("MATCH (h:House {uid:{hid}}) CREATE ((h) -[r:Has]-> (s:Sensor{uid:{sid},type:{type},attributes:{attributes}}));", {hid: req.body.hid, sid: req.body.sid, type: req.body.type, attributes: req.body.attributes})
-                    .then(function () {
-                        res.status(201);
-                        res.send(wrapper(201, "Created", req.body));
+                if (recordFieldObjects.length > 0) {
+
+                    var house = session.run("MATCH (s:Sensor{uid:{sid}}) RETURN s AS Sensor;", {id: req.body.sid});
+                    house.then(function (result) {
+                        var records = result.records;
+                        var recordFieldObjects = records.map(function (item) {
+                            return item._fields[0].properties; // Extract fields from the record
+                        });
+                        
+                        if (recordFieldObjects.length > 0){
+                            res.status(200);
+                            res.send(wrapper(200, "OK", {message: "Sensor with that Id already exists!"}));
+                        }
+                        else {
+                            session
+                                .run("MATCH (h:House {uid:{hid}}) CREATE ((h) -[r:Has]-> (s:Sensor{uid:{sid},type:{type},attributes:{attributes}}));", {hid: req.body.hid, sid: req.body.sid, type: req.body.type, attributes: req.body.attributes})
+                                .then(function () {
+                                    res.status(201);
+                                    res.send(wrapper(201, "Created", req.body));
+                                });                            
+                        }
                     });
                 }
                 else {
@@ -56,9 +71,9 @@ router.post('/', function (req, res) {
                 res.status(503);
                 res.send(wrapper(503, errorMessage));
             });
-            
 
-            
+
+
         }
     });
 });

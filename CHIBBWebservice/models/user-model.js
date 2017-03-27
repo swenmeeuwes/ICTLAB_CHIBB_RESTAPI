@@ -8,6 +8,20 @@
 
 var userModel = {};
 
+userModel.register = function (session) {
+    // To-do:
+    return new Promise(function (resolve, reject) {
+        var user = session.run("MATCH (u:User) WHERE u.username = {username} RETURN u;", {username: "henk"});
+        user.then(function (result) {
+
+            var user = result.records.map(function(record) {
+                return new User(record.get('user'));
+            });
+            resolve(result);
+        });
+    });
+};
+
 userModel.getAll = function (session) {
 //    return new Promise((resolve, reject) => {
 //        
@@ -18,7 +32,7 @@ userModel.getAll = function (session) {
 
 userModel.getByID = function (session, id) {
     // return promise
-    
+
     session.close();
 };
 

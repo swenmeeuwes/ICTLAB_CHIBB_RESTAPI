@@ -6,26 +6,75 @@
  * A model which represents an user
  **/
 
+var SHA256 = require('crypto-js/sha256');
+
 var userModel = {};
 
-userModel.register = function (session) {
-    // To-do:
-    return new Promise(function (resolve, reject) {
-        var user = session.run("MATCH (u:User) WHERE u.username = {username} RETURN u;", {username: "henk"});
-        user.then(function (result) {
+var User = function (properties) {
+    this.username = properties.username;
+    this.password = properties.password;
+    this.email = properties.email;
+    this.salt = properties.salt;
+    this.secret = properties.secret;
+};
 
-            var user = result.records.map(function(record) {
-                return new User(record.get('user'));
-            });
-            resolve(result);
+userModel.constructor = User;
+
+userModel.login = function(session, requestBody){
+    return new Promise(function(resolve, reject){
+        var user = session.run("MATCH (u:User {username:{username}}) return u AS User;", {username: requestBody.username});
+        user.then(function(result){
+            if(result.records[0]){
+                var properties = result.records[0]._fields[0].properties;
+                var hashedPassword = properties.password;
+                if(SHA256(requestBody.password + properties.salt).toString() === hashedPassword){
+                    resolve();
+                }
+                else {
+                    reject({message: "Wrong password"});
+                }
+            }
+            else {
+                reject({message: "No such user found!"});
+            }
+        })
+    })
+};
+
+userModel.register = function (session, requestBody) {
+    return new Promise(function (resolve, reject) {
+        var user = session.run("MATCH (u:User {username:{username}}) RETURN u AS User;", {username: requestBody.username});
+        user.then(function (result) {
+            if (result.records[0]) {
+                reject({message: "Username already in use!"});
+            }
+            else {
+                var newUser = session.run("CREATE (u:User {username:{username},password:{password}, email: {email}, salt: {salt}, secret: {secret}});", requestBody);
+                newUser.then(function () {
+                    resolve(new User(requestBody));
+                });
+            }
         });
     });
+    session.close();
 };
 
 userModel.getAll = function (session) {
-//    return new Promise((resolve, reject) => {
-//        
-//    });
+    return new Promise(function (resolve, reject) {
+        var users = session.run("MATCH (u:User) return u AS User;");
+        users.then(function(result){
+            if(result.records[0]){
+                var userArray = [];
+                for(var i = 0; i < result.records.length; i++){
+                    userArray.push(new User(result.records[i]._fields[0].properties));
+                }
+                resolve(userArray);
+            }
+            else {
+                resolve([]);
+            }
+        });
+    });
 
     session.close();
 };

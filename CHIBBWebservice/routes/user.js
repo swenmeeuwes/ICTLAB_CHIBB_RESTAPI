@@ -28,37 +28,57 @@ var userModel = require('../models/user-model');
 //  next()
 //});
 
+router.post('/register', function (req, res) {
+    var requestBody = req.body;
+    var salt = randomString.generate(16);
+    var secret = randomString.generate(16);
+
+    var password = SHA256(requestBody.password + salt).toString();
+
+    var registerPromise = userModel.register(dbConnector.getSession(req),
+            {
+                username: requestBody.username,
+                password: password,
+                email: requestBody.email,
+                salt: salt,
+                secret: secret
+            });
+
+    registerPromise.then(function (data) {
+        res.created({user: data});
+    }).catch(function (error) {
+        res.ok({error: error.message});
+    });
+});
+
 // To-do: Finish with query
 router.post('/login', function (req, res) {
     var username = req.body.username;
     var password = req.body.password;
 
-    var token = jwt.sign({
-        username: username
-    }, secret, {expiresIn: '1h'});
+    var loginPromise = userModel.login(dbConnector.getSession(req), req.body);
+    loginPromise.then(function () {
+        var token = jwt.sign({
+            username: username
+        }, secret, {expiresIn: '1h'});
 
-    res.ok({token: token});
-});
+        res.ok({token: token});
 
-router.get('/temp', function (req, res) {
-    var registerPromise = userModel.register(dbConnector.getSession(req));
-    registerPromise.then(function (data) {
-        data.forEach(function(visitor) {
-            console.log(visitor);
-        });
-    })
-    .catch(function (error) {
-
+    }).catch(function (error) {
+        res.ok({error: error.message});
     });
-    
-    res.send("");
 });
 
-router.get('/register', function (req, res) {
-    var requestBody = req.body;
-    var salt = randomString.generate(16);
-
-    var password = SHA256(requestBody.password + salt).toString();
+router.get('/getall', function (req, res) {
+    var getPromise = userModel.getAll(dbConnector.getSession(req));
+    getPromise.then(function (data) {
+        if (data.length > 0) {
+            res.ok(data);
+        }
+        else {
+            res.nocontent(data);
+        }
+    });
 });
 
 module.exports = router;

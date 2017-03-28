@@ -24,6 +24,34 @@ express.response.ok = function (resultBody) {
     this.json(response);
 };
 
+// 201 Created
+express.response.created = function (resultBody){
+    var response = {};
+    response.statusCode = 201;
+    response.statusMessage = "Created";
+    response.result = resultBody;
+    
+    if (resultBody.length)
+        response.resultLength = resultBody.length;
+    
+    this.status(response.statusCode);
+    this.json(response);
+};
+
+// 204 No Content
+express.response.nocontent = function (resultBody){
+    var response = {};
+    response.statusCode = 204;
+    response.statusMessage = "No Content";
+    response.result = resultBody;
+    
+    if (resultBody.length)
+        response.resultLength = resultBody.length;
+    
+    this.status(response.statusCode);
+    this.json(response);
+};
+
 // 4xx Client errors
 // 400 Bad Request
 express.response.badrequest = function (additionalMessage) {
@@ -43,6 +71,19 @@ express.response.unauthorized = function (additionalMessage) {
     var response = {};
     response.statusCode = 401;
     response.statusMessage = "Unauthorized";
+
+    if (additionalMessage)
+        response.message = additionalMessage;
+
+    this.status(response.statusCode);
+    this.json(response);
+};
+
+// 404 Not Found
+express.response.notfound = function (additionalMessage) {
+    var response = {};
+    response.statusCode = 404;
+    response.statusMessage = "Not Found";
 
     if (additionalMessage)
         response.message = additionalMessage;

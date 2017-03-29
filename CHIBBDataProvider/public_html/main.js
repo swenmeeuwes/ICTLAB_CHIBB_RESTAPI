@@ -42,7 +42,7 @@ function sendDummyData() {
     };
 
     var options = {
-        url: 'http://145.24.222.157:443/record',
+        url: 'http://localhost:8081/record/',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -6,6 +6,8 @@
  * A model which represents a sensor
  **/
 
+var recordModel = require('./record-model');
+
 var sensorModel = {};
 
 var Sensor = function (properties) {
@@ -151,9 +153,35 @@ sensorModel.deleteSensor = function(session, username, sid){
         });
     });
     session.close();
-}
+};
 
-
+sensorModel.getData = function(session, username, sid){
+    return new Promise(function (resolve, reject) {
+        var sensors = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor {sid:{sid}}) RETURN s AS Sensor;", {username: username, sid: sid});
+        sensors.then(function (result) {
+            if (result.records[0]) {
+                var sensor = new Sensor(result.records[0]._fields[0].properties);
+                var records = session.run("MATCH (s:Sensor {sid:{sid}}) -[:Has_record]-> (re:Record) return re AS Record;", {sid: sid});
+                records.then(function(result){
+                    if(result.records[0]){
+                        var recordsArray = [];
+                        for (var i = 0; i < result.records.length; i++) {
+                            recordsArray.push(new recordModel.constructor(result.records[i]._fields[0].properties, sensor.attributes));
+                        }
+                        resolve(recordsArray);
+                    }
+                    else {
+                        resolve([]);
+                    }
+                });
+            }
+            else {
+                reject({message: "Sensor with that id does not exist!"});
+            }
+        });
+    });
+    session.close();
+};
 
 module.exports = sensorModel;
 

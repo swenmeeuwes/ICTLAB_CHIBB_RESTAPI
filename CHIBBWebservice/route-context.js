@@ -14,4 +14,5 @@ exports.configure = function(router) {
     router.use('/house', isAuthenticated, routes.house);
     router.use('/sensor', isAuthenticated, routes.sensor);
     router.use('/user', routes.user);
+    router.use('/record', routes.record);
 };

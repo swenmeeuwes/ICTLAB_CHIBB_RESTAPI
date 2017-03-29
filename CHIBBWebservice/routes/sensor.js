@@ -55,6 +55,18 @@ router.get('/:id', function (req, res) {
     });
 });
 
+router.get('/data/:id', function(req, res){
+    var getPromise = sensorModel.getData(dbConnector.getSession(req), res.locals.username, req.params.id);
+    getPromise.then(function (data) {
+        if (data.length > 0) {
+            res.ok(data);
+        }
+        else {
+            res.nocontent(data);
+        }
+    });
+});
+
 router.post('/', function (req, res) {
     var createPromise = sensorModel.createSensor(dbConnector.getSession(req), res.locals.username, req.body);
     createPromise.then(function (data) {

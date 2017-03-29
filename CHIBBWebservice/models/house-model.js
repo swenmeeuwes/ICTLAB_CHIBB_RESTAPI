@@ -126,8 +126,8 @@ houseModel.deleteHouse = function (session, username, hid) {
                 var house = session.run("MATCH (u:User {username:{username}}) -[r:Owns]-> (h:House{hid:{hid}}) RETURN h AS House;", {username: username, hid: hid});
                 house.then(function (result) {
                     if (result.records[0]) {
-                        var updatedHouse = session.run("MATCH (h:House {hid:{hid}}) DETACH DELETE h", {hid: hid});
-                        updatedHouse.then(function () {
+                        var deletedHouse = session.run("MATCH (u:User {username:{username}}), (h:House {hid:{hid}}) OPTIONAL MATCH (u)-[:Owns]-> (h) -[:Has]-> (s:Sensor) OPTIONAL MATCH (u)-[:Owns]-> (h) -[:Has]-> (s:Sensor) -[:Has_record]-> (r:Record) DETACH DELETE h, s, r;", {username: username, hid: hid});
+                        deletedHouse.then(function () {
                             resolve(new House({hid: hid}));
                         });
                     }

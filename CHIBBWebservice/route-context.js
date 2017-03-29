@@ -12,5 +12,6 @@ var routes = require('./routes');
 exports.configure = function(router) {   
     // Add routes here
     router.use('/house', isAuthenticated, routes.house);
+    router.use('/sensor', isAuthenticated, routes.sensor);
     router.use('/user', routes.user);
 };

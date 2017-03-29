@@ -8,3 +8,4 @@
 
 exports.house = require('./house');
 exports.user = require('./user');
+exports.sensor = require('./sensor');

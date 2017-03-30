@@ -32,11 +32,11 @@ UserModel.login = function (session, requestBody) {
                     resolve();
                 } else {
                     session.close();
-                    reject({error: 403, message: "Wrong password"});
+                    reject({code: 403, message: "Wrong password"});
                 }
             } else {
                 session.close();
-                reject({error: 404, message: "No such user found!"});
+                reject({code: 404, message: "No such user found!"});
             }
         });
     });

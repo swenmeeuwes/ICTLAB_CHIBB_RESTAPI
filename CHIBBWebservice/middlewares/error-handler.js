@@ -11,5 +11,5 @@ module.exports = function (req, res, next) {
     
     // For now return error
     var errorObject = res.locals.error; // Has 'code' and 'message' properties
-    res.interalServerError(errorObject.message);
+    res.interalservererror(errorObject.message);
 };

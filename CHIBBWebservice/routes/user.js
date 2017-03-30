@@ -60,12 +60,22 @@ router.post('/login', function (req, res) {
     loginPromise.then(function () {
         var token = jwt.sign({
             username: username
+            // Doesn't need a timestamp?
         }, secret, {expiresIn: '1h'});
 
         res.ok({token: token});
-
     }).catch(function (error) {
-        res.ok({error: error.message});
+        switch(error.code) {
+            case 403:
+                res.forbidden(error.message);
+                break;
+            case 404:
+                res.notfound(error.message);
+                break;
+            default:
+                res.interalservererror();
+                break;
+        }
     });
 });
 

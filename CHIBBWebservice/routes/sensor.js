@@ -67,8 +67,8 @@ router.get('/data/:id', function (req, res, next) {
 //        }
     })
     .catch(function (error) {
-        res.locals.error = error;
-        next();
+        // only reject case here is: sensor not found
+        res.notFound("Sensor with that id does not exist!");
     });
 });
 

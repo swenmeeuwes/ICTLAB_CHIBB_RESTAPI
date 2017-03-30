@@ -91,3 +91,17 @@ express.response.notfound = function (additionalMessage) {
     this.status(response.statusCode);
     this.json(response);
 };
+
+// 5xx Server error
+// 500 Internal Server Error
+express.response.interalServerError = function (additionalMessage) {
+    var response = {};
+    response.statusCode = 500;
+    response.statusMessage = "Internal Server Error";
+
+    if (additionalMessage)
+        response.message = additionalMessage;
+
+    this.status(response.statusCode);
+    this.json(response);
+};

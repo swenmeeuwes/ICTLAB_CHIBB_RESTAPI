@@ -89,7 +89,7 @@ sensorModel.createSensor = function (session, username, requestBody) {
                             resolve(new Sensor(requestBody));
                         });
                     } else {
-                        reject({message: "Given house does not exist or is not yours!"}); // Not found 404
+                        reject({message: "Given house does not exist or is not yours!"}); // Not found 404 {code: 404, message: "given house..."}
                     }
                 });
             }
@@ -165,7 +165,7 @@ sensorModel.getData = function (session, username, sid) {
                     }
                 });
             } else {
-                resolve({message: "Sensor with that id does not exist!"});
+                reject({message: "Sensor with that id does not exist!"});
             }
         });
     });

@@ -6,7 +6,7 @@
  * A model which represents a sensor
  **/
 
-var recordModel = {};
+var RecordModel = {};
 
 /**
 * This constructor contains a for loop, because it dynamically creates attributes.
@@ -26,10 +26,9 @@ var Record = function (properties, sensorAttributes) {
     }
 };
 
-recordModel.constructor = Record;
+RecordModel.constructor = Record;
 
-// Rename to createData
-recordModel.postData = function (session, requestBody) {
+RecordModel.createData = function (session, requestBody) {
     return new Promise(function (resolve, reject) {
         var sensors = session.run("MATCH (s:Sensor) return s AS Sensor;");
         sensors.then(function (result) {
@@ -39,18 +38,19 @@ recordModel.postData = function (session, requestBody) {
                     var record = session.run("MATCH (s:Sensor {sid:{sid}}) CREATE ((s) -[r:Has_record]-> (re:Record{timestamp:{timestamp}, sensorState:{sensorState}, sensorBatteryLevel:{sensorBatteryLevel}, unit:{unit}, value:{value} }));",
                             {sid: newSensorData[i].id, timestamp: newSensorData[i].timestamp, sensorState: newSensorData[i].sensorState, sensorBatteryLevel: newSensorData[i].sensorBatteryLevel, unit: newSensorData[i].unit, value: newSensorData[i].value});
                         record.then(function(){
+                            session.close();
                             resolve(requestBody);
                         });
                 }
             }
             else {
+                session.close();
                 reject({message: "No sensor with that id found!"});
             }
         });
     });
-    session.close();
 };
 
-module.exports = recordModel;
+module.exports = RecordModel;
 
 

@@ -20,7 +20,7 @@ var recordModel = require('../models/record-model');
 //});
 
 router.post('/', function(req, res){
-    var createPromise = recordModel.postData(dbConnector.getSession(req), req.body);
+    var createPromise = recordModel.createData(dbConnector.getSession(req), req.body);
     createPromise.then(function(data){
         res.created({data: data});
     }).catch(function(error){

@@ -82,6 +82,19 @@ express.response.unauthorized = function (additionalMessage) {
     this.json(response);
 };
 
+// 403 Forbidden
+express.response.forbidden = function (additionalMessage) {
+    var response = {};
+    response.statusCode = 403;
+    response.statusMessage = "Forbidden";
+
+    if (additionalMessage)
+        response.message = additionalMessage;
+
+    this.status(response.statusCode);
+    this.json(response);
+};
+
 // 404 Not Found
 express.response.notfound = function (additionalMessage) {
     var response = {};
@@ -97,7 +110,7 @@ express.response.notfound = function (additionalMessage) {
 
 // 5xx Server error
 // 500 Internal Server Error
-express.response.interalServerError = function (additionalMessage) {
+express.response.interalservererror = function (additionalMessage) {
     var response = {};
     response.statusCode = 500;
     response.statusMessage = "Internal Server Error";

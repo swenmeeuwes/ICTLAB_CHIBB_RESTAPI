@@ -11,14 +11,17 @@ var express = require("express");
 
 // 2xx Success
 // 200 OK
-express.response.ok = function (resultBody) {
+express.response.ok = function (resultBody, warningMessage) {
     var response = {};
     response.statusCode = 200;
     response.statusMessage = "OK";
     response.result = resultBody;
-
+    
     if (resultBody.length)
         response.resultLength = resultBody.length;
+    
+    if (resultBody.warningMessage)
+        response.warningMessage = warningMessage;
 
     this.status(response.statusCode);
     this.json(response);

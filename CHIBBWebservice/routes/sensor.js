@@ -19,17 +19,18 @@ var sensorModel = require('../models/sensor-model');
 //  next()
 //});
 
-router.get('/getall', function (req, res) {
-    var getPromise = sensorModel.getAllSensors(dbConnector.getSession(req));
-    getPromise.then(function (data) {
-        if (data.length > 0) {
-            res.ok(data);
-        }
-        else {
-            res.nocontent(data);
-        }
-    });
-});
+// Dangerous route, should be removed and probably not used...
+//router.get('/getall', function (req, res) {
+//    var getPromise = sensorModel.getAllSensors(dbConnector.getSession(req));
+//    getPromise.then(function (data) {
+//        if (data.length > 0) {
+//            res.ok(data);
+//        }
+//        else {
+//            res.nocontent(data);
+//        }
+//    });
+//});
 
 router.get('/', function (req, res) {
     var getPromise = sensorModel.getAllSensors(dbConnector.getSession(req), res.locals.username);
@@ -55,16 +56,20 @@ router.get('/:id', function (req, res) {
     });
 });
 
-router.get('/data/:id', function(req, res){
+router.get('/data/:id', function (req, res) {
     var getPromise = sensorModel.getData(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function (data) {
         if (data.length > 0) {
             res.ok(data);
         }
         else {
-            res.nocontent(data);
+            res.ok(data);
         }
     });
+    // Think about what to handle here
+//    .catch(function (error) {
+//        //res.interalServerError(error);
+//    });
 });
 
 router.post('/', function (req, res) {
@@ -72,9 +77,10 @@ router.post('/', function (req, res) {
     createPromise.then(function (data) {
         res.created({sensor: data});
     }).catch(function (error) {
-        res.ok({error: error.message});
+        // Maybe use a error handler module which uses an 'ResponseWrapperFactory' and takes statusCodes + error (objects)
+        res.ok({error: error.message}); // Status: OK? should be internal service error?
     });
-});
+}); // Maybe error handler middleware? only next if error
 
 router.put('/:id', function (req, res) {
     var updatePromise = sensorModel.updateSensor(dbConnector.getSession(req), res.locals.username, req.params.id, req.body);

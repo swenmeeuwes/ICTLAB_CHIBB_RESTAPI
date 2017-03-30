@@ -8,7 +8,8 @@
 
 var recordModel = {};
 
-/** This constructor contains a for loop, because it dynamically creates attributes.
+/**
+* This constructor contains a for loop, because it dynamically creates attributes.
 * For example, if a user created this sensor, and the following record comes in:
 * Sensor: {sid: 1,type: "Temperature", attributes: ["value", "unit"]},
 * Record: {id: 1, timestamp: 1402820292, type: "Temperature", batteryLevel: 90, value: 12, unit: "Celsius"}
@@ -17,6 +18,8 @@ var recordModel = {};
 * 
 * So, only the attributes provided by the user himself get selected for his model
 **/
+
+// To-do: Make a seperate method for the filtering, since this behaviour is not expected from a constructor
 var Record = function (properties, sensorAttributes) {
     for(var i = 0; i < sensorAttributes.length; i++){
         this[sensorAttributes[i]] = properties[sensorAttributes[i]];
@@ -25,6 +28,7 @@ var Record = function (properties, sensorAttributes) {
 
 recordModel.constructor = Record;
 
+// Rename to createData
 recordModel.postData = function (session, requestBody) {
     return new Promise(function (resolve, reject) {
         var sensors = session.run("MATCH (s:Sensor) return s AS Sensor;");

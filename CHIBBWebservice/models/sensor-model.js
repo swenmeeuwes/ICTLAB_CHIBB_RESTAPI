@@ -6,9 +6,9 @@
  * A model which represents a sensor
  **/
 
-var recordModel = require('./record-model');
+var RecordModel = require('./record-model');
 
-var sensorModel = {};
+var sensorModel = {}; // To-do: Capitalize
 
 var Sensor = function (properties) {
     this.sid = properties.sid;
@@ -20,7 +20,7 @@ var Sensor = function (properties) {
 sensorModel.constructor = Sensor;
 
 // Get all sensors in the database (for admin purposes)
-sensorModel.getAllSensors = function(session){
+sensorModel.getAllSensors = function (session) {
     return new Promise(function (resolve, reject) {
         var sensors = session.run("MATCH (s:Sensor) return s AS Sensor;");
         sensors.then(function (result) {
@@ -30,16 +30,15 @@ sensorModel.getAllSensors = function(session){
                     sensorArray.push(new Sensor(result.records[i]._fields[0].properties));
                 }
                 resolve(sensorArray);
-            }
-            else {
+            } else {
                 resolve([]);
             }
         });
     });
-    session.close();  
+    session.close(); // To-do: Never called, move before resolves/ rejects 
 };
 
-sensorModel.getUserSensors = function(session, username){
+sensorModel.getUserSensors = function (session, username) {
     return new Promise(function (resolve, reject) {
         var sensors = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor) RETURN s AS Sensor;", {username: username});
         sensors.then(function (result) {
@@ -49,16 +48,15 @@ sensorModel.getUserSensors = function(session, username){
                     sensorArray.push(new House(result.records[i]._fields[0].properties));
                 }
                 resolve(sensorArray);
-            }
-            else {
+            } else {
                 resolve([]);
             }
         });
     });
-    session.close();    
+    session.close();
 };
 
-sensorModel.getById = function(session, username, sid){
+sensorModel.getById = function (session, username, sid) {
     return new Promise(function (resolve, reject) {
         var sensors = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor {sid:{sid}}) RETURN s AS Sensor;", {username: username, sid: sid});
         sensors.then(function (result) {
@@ -68,8 +66,7 @@ sensorModel.getById = function(session, username, sid){
                     sensorArray.push(new Sensor(result.records[i]._fields[0].properties));
                 }
                 resolve(sensorArray);
-            }
-            else {
+            } else {
                 resolve([], {message: "House does not exist or is not yours!"});
             }
         });
@@ -77,24 +74,22 @@ sensorModel.getById = function(session, username, sid){
     session.close();
 };
 
-sensorModel.createSensor = function(session, username, requestBody){
+sensorModel.createSensor = function (session, username, requestBody) {
     return new Promise(function (resolve, reject) {
         var sensor = session.run("MATCH (s:Sensor {sid:{sid}}) return s AS Sensor;", {sid: requestBody.sid});
         sensor.then(function (result) {
             if (result.records[0]) {
-                reject({message: "Sensor with that Id already exists!"});
-            }
-            else {
+                reject({message: "Sensor with that Id already exists!"}); // Resolve -> OK?
+            } else {
                 var sensor = session.run("MATCH (u:User{username:{username}})-[:Owns]->(h:House{hid:{hid}}) RETURN h AS House;", {username: username, hid: requestBody.hid});
-                sensor.then(function(result){
-                    if(result.records[0]){
+                sensor.then(function (result) {
+                    if (result.records[0]) {
                         var newSensor = session.run("MATCH (h:House {hid:{hid}}) CREATE ((h) -[r:Has]-> (s:Sensor{sid:{sid},type:{type},attributes:{attributes}}));", {hid: requestBody.hid, sid: requestBody.sid, type: requestBody.type, attributes: requestBody.attributes});
-                        newSensor.then(function(){
+                        newSensor.then(function () {
                             resolve(new Sensor(requestBody));
                         });
-                    }
-                    else {
-                        reject({message: "Given house does not exist or is not yours!"});
+                    } else {
+                        reject({message: "Given house does not exist or is not yours!"}); // Not found 404
                     }
                 });
             }
@@ -103,7 +98,7 @@ sensorModel.createSensor = function(session, username, requestBody){
     session.close();
 };
 
-sensorModel.updateSensor = function(session, username, sid, requestBody){
+sensorModel.updateSensor = function (session, username, sid, requestBody) {
     return new Promise(function (resolve, reject) {
         var sensor = session.run("MATCH (s:Sensor {sid:{sid}}) return s AS Sensor;", {sid: sid});
         sensor.then(function (result) {
@@ -115,13 +110,11 @@ sensorModel.updateSensor = function(session, username, sid, requestBody){
                         updatedSensor.then(function () {
                             resolve(new Sensor(requestBody));
                         });
-                    }
-                    else {
+                    } else {
                         reject({message: "Sensor with that id is not yours!"});
                     }
                 });
-            }
-            else {
+            } else {
                 reject({message: "Sensor with that id does not exist!"});
             }
         });
@@ -129,7 +122,7 @@ sensorModel.updateSensor = function(session, username, sid, requestBody){
     session.close();
 };
 
-sensorModel.deleteSensor = function(session, username, sid){
+sensorModel.deleteSensor = function (session, username, sid) {
     return new Promise(function (resolve, reject) {
         var sensor = session.run("MATCH (s:Sensor {sid:{sid}}) return s AS Sensor;", {sid: sid});
         sensor.then(function (result) {
@@ -141,13 +134,11 @@ sensorModel.deleteSensor = function(session, username, sid){
                         deletedSensor.then(function () {
                             resolve(new Sensor({sid: sid}));
                         });
-                    }
-                    else {
+                    } else {
                         reject({message: "Sensor with that id is not yours!"});
                     }
                 });
-            }
-            else {
+            } else {
                 reject({message: "Sensor with that id does not exist!"});
             }
         });
@@ -155,28 +146,26 @@ sensorModel.deleteSensor = function(session, username, sid){
     session.close();
 };
 
-sensorModel.getData = function(session, username, sid){
+sensorModel.getData = function (session, username, sid) {
     return new Promise(function (resolve, reject) {
         var sensors = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor {sid:{sid}}) RETURN s AS Sensor;", {username: username, sid: sid});
         sensors.then(function (result) {
             if (result.records[0]) {
                 var sensor = new Sensor(result.records[0]._fields[0].properties);
                 var records = session.run("MATCH (s:Sensor {sid:{sid}}) -[:Has_record]-> (re:Record) return re AS Record;", {sid: sid});
-                records.then(function(result){
-                    if(result.records[0]){
+                records.then(function (result) {
+                    if (result.records[0]) {
                         var recordsArray = [];
                         for (var i = 0; i < result.records.length; i++) {
-                            recordsArray.push(new recordModel.constructor(result.records[i]._fields[0].properties, sensor.attributes));
+                            recordsArray.push(new RecordModel(result.records[i]._fields[0].properties, sensor.attributes));
                         }
                         resolve(recordsArray);
-                    }
-                    else {
+                    } else {
                         resolve([]);
                     }
                 });
-            }
-            else {
-                reject({message: "Sensor with that id does not exist!"});
+            } else {
+                resolve({message: "Sensor with that id does not exist!"});
             }
         });
     });

@@ -26,8 +26,7 @@ houseModel.getAllHouses = function (session) {
                     houseArray.push(new House(result.records[i]._fields[0].properties));
                 }
                 resolve(houseArray);
-            }
-            else {
+            } else {
                 resolve([]);
             }
         });
@@ -46,8 +45,7 @@ houseModel.getUserHouses = function (session, username) {
                     houseArray.push(new House(result.records[i]._fields[0].properties));
                 }
                 resolve(houseArray);
-            }
-            else {
+            } else {
                 resolve([]);
             }
         });
@@ -65,8 +63,7 @@ houseModel.getById = function (session, username, hid) {
                     houseArray.push(new House(result.records[i]._fields[0].properties));
                 }
                 resolve(houseArray);
-            }
-            else {
+            } else {
                 resolve([], {message: "House does not exist or is not yours!"});
             }
         });
@@ -80,8 +77,7 @@ houseModel.createHouse = function (session, username, requestBody) {
         house.then(function (result) {
             if (result.records[0]) {
                 reject({message: "House with that Id already exists!"});
-            }
-            else {
+            } else {
                 var newHouse = session.run("MATCH (u:User {username:{username}}) CREATE ((u) -[r:Owns]-> (h:House{hid:{hid},address:{address}}));", {username: username, hid: requestBody.hid, address: requestBody.address});
                 newHouse.then(function () {
                     resolve(new House(requestBody));
@@ -104,13 +100,11 @@ houseModel.updateHouse = function (session, username, hid, requestBody) {
                         updatedHouse.then(function () {
                             resolve(new House(requestBody));
                         });
-                    }
-                    else {
+                    } else {
                         reject({message: "House with that id is not yours!"});
                     }
                 });
-            }
-            else {
+            } else {
                 reject({message: "House with that id does not exist!"});
             }
         });
@@ -130,13 +124,11 @@ houseModel.deleteHouse = function (session, username, hid) {
                         deletedHouse.then(function () {
                             resolve(new House({hid: hid}));
                         });
-                    }
-                    else {
+                    } else {
                         reject({message: "House with that id is not yours!"});
                     }
                 });
-            }
-            else {
+            } else {
                 reject({message: "House with that id does not exist!"});
             }
         });

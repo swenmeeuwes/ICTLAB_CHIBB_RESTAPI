@@ -7,13 +7,12 @@
  **/
 
 var isAuthenticated = require('./middlewares/is-authenticated');
-var errorHandler = require('./middlewares/error-handler');
 var routes = require('./routes');
 
 exports.configure = function(router) {   
     // Add routes here
-    router.use('/house', isAuthenticated, routes.house, errorHandler);
-    router.use('/sensor', isAuthenticated, routes.sensor, errorHandler);
-    router.use('/user', routes.user, errorHandler);
-    router.use('/record', routes.record, errorHandler);
+    router.use('/house', isAuthenticated, routes.house);
+    router.use('/sensor', isAuthenticated, routes.sensor);
+    router.use('/user', routes.user);
+    router.use('/record', routes.record);
 };

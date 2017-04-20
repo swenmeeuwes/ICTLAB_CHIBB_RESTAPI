@@ -1,5 +1,6 @@
 # CHIBB house API
-_For ICT_Lab_
+_ICT-Lab Project_
+Github repository: [https://github.com/swenmeeuwes/ICTLAB_CHIBB_RESTAPI](https://github.com/swenmeeuwes/ICTLAB_CHIBB_RESTAPI)
 
 This project contains the following:
 * DataProvider

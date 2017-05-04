@@ -22,36 +22,21 @@ var houseModel = require('../models/house-model');
 router.get('/getall', function(req, res) {
     var getPromise = houseModel.getAllHouses(dbConnector.getSession(req));
     getPromise.then(function (data) {
-        if (data.length > 0) {
-            res.ok(data);
-        }
-        else {
-            res.nocontent(data);
-        }
+        res.ok(data);
     });
 });
 
 router.get('/', function(req, res){
     var getPromise = houseModel.getUserHouses(dbConnector.getSession(req), res.locals.username);
     getPromise.then(function(data){
-        if (data.length > 0) {
-            res.ok(data);
-        }
-        else {
-            res.nocontent(data);
-        }
+        res.ok(data);
     });
 });
 
 router.get('/:id', function(req, res){
     var getPromise = houseModel.getById(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function(data){
-        if (data.length > 0) {
-            res.ok(data);
-        }
-        else {
-            res.nocontent(data);
-        }
+        res.ok(data);
     });
 });
 

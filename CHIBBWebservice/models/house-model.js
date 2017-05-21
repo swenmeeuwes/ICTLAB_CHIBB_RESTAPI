@@ -9,7 +9,7 @@
 var HouseModel = {};
 
 var House = function (properties) {
-    this.uid = properties.uid;
+    this.hid = properties.hid;
     this.address = properties.address;
 };
 

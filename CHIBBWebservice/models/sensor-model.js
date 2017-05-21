@@ -46,7 +46,7 @@ SensorModel.getUserSensors = function (session, username) {
             if (result.records[0]) {
                 var sensorArray = [];
                 for (var i = 0; i < result.records.length; i++) {
-                    sensorArray.push(new House(result.records[i]._fields[0].properties));
+                    sensorArray.push(new Sensor(result.records[i]._fields[0].properties));
                 }
                 session.close();
                 resolve(sensorArray);

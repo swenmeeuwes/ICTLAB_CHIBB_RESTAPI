@@ -39,7 +39,7 @@ router.get('/', function (req, res) {
             res.ok(data);
         }
         else {
-            res.nocontent(data);
+            res.ok(data);
         }
     });
 });
@@ -51,7 +51,7 @@ router.get('/:id', function (req, res) {
             res.ok(data);
         }
         else {
-            res.nocontent(data);
+            res.ok(data);
         }
     });
 });

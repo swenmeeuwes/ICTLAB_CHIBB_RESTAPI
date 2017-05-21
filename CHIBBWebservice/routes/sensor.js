@@ -45,6 +45,18 @@ router.get('/', function (req, res) {
 });
 
 router.get('/:id', function (req, res) {
+    var getPromise = sensorModel.getSensorsFromHouseId(dbConnector.getSession(req), res.locals.username, req.params.id);
+    getPromise.then(function (data) {
+        if (data.length > 0) {
+            res.ok(data);
+        }
+        else {
+            res.ok(data);
+        }
+    });
+});
+
+router.get('/id/:id', function (req, res) {
     var getPromise = sensorModel.getById(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function (data) {
         if (data.length > 0) {
@@ -60,16 +72,16 @@ router.get('/data/:id', function (req, res, next) {
     var getPromise = sensorModel.getData(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function (data) {
 //        if (data.length > 0) {
-            res.ok(data);
+        res.ok(data);
 //        }
 //        else {
 //            res.ok(data);
 //        }
     })
-    .catch(function (error) {
-        // only reject case here is: sensor not found
-        res.notFound("Sensor with that id does not exist!");
-    });
+            .catch(function (error) {
+                // only reject case here is: sensor not found
+                res.notFound("Sensor with that id does not exist!");
+            });
 });
 
 router.post('/', function (req, res) {

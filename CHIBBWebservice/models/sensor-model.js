@@ -58,6 +58,28 @@ SensorModel.getUserSensors = function (session, username) {
     });
 };
 
+SensorModel.getSensorsFromHouseId = function (session, username, hid) {
+    return new Promise(function (resolve, reject) {
+        var sensors = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House {hid: {hid}})-[:Has]->(s:Sensor) RETURN s AS Sensor;", {username: username, hid: hid});
+        sensors.then(function (result) {
+            if (result.records[0]) {
+                var sensorArray = [];
+                for (var i = 0; i < result.records.length; i++) {
+                    var properties = new Sensor(result.records[i]._fields[0].properties);
+                    properties.hid = hid;
+                    
+                    sensorArray.push(properties);
+                }
+                session.close();
+                resolve(sensorArray);
+            } else {
+                session.close();
+                resolve([]);
+            }
+        });
+    });
+};
+
 SensorModel.getById = function (session, username, sid) {
     return new Promise(function (resolve, reject) {
         var sensors = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor {sid:{sid}}) RETURN s AS Sensor;", {username: username, sid: sid});

@@ -33,7 +33,7 @@ var sensorModel = require('../models/sensor-model');
 //});
 
 router.get('/', function (req, res) {
-    var getPromise = sensorModel.getAllSensors(dbConnector.getSession(req), res.locals.username);
+    var getPromise = sensorModel.getUserSensors(dbConnector.getSession(req), res.locals.username);
     getPromise.then(function (data) {
         if (data.length > 0) {
             res.ok(data);
@@ -98,7 +98,6 @@ router.delete('/:id', function (req, res) {
     }).catch(function (error) {
         res.ok(error.message);
     });
-
 });
 
 module.exports = router;

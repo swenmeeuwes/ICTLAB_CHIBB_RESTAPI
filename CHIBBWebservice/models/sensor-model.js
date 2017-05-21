@@ -20,24 +20,24 @@ var Sensor = function (properties) {
 SensorModel.constructor = Sensor;
 
 // Get all sensors in the database (for admin purposes)
-SensorModel.getAllSensors = function (session) {
-    return new Promise(function (resolve, reject) {
-        var sensors = session.run("MATCH (s:Sensor) return s AS Sensor;");
-        sensors.then(function (result) {
-            if (result.records[0]) {
-                var sensorArray = [];
-                for (var i = 0; i < result.records.length; i++) {
-                    sensorArray.push(new Sensor(result.records[i]._fields[0].properties));
-                }
-                session.close();
-                resolve(sensorArray);
-            } else {
-                session.close();
-                resolve([]);
-            }
-        });
-    });
-};
+//SensorModel.getAllSensors = function (session) {
+//    return new Promise(function (resolve, reject) {
+//        var sensors = session.run("MATCH (s:Sensor) return s AS Sensor;");
+//        sensors.then(function (result) {
+//            if (result.records[0]) {
+//                var sensorArray = [];
+//                for (var i = 0; i < result.records.length; i++) {
+//                    sensorArray.push(new Sensor(result.records[i]._fields[0].properties));
+//                }
+//                session.close();
+//                resolve(sensorArray);
+//            } else {
+//                session.close();
+//                resolve([]);
+//            }
+//        });
+//    });
+//};
 
 SensorModel.getUserSensors = function (session, username) {
     return new Promise(function (resolve, reject) {

@@ -13,6 +13,7 @@ var SensorModel = {};
 var Sensor = function (properties) {
     this.sid = properties.sid;
     this.hid = properties.hid;
+    this.location = properties.location;
     this.type = properties.type;
     this.attributes = properties.attributes;
 };
@@ -107,9 +108,9 @@ SensorModel.createSensor = function (session, username, requestBody) {
                 reject({message: "Sensor with that Id already exists!"}); // Resolve -> OK?
             } else {
                 var sensor = session.run("MATCH (u:User{username:{username}})-[:Owns]->(h:House{hid:{hid}}) RETURN h AS House;", {username: username, hid: requestBody.hid});
-                sensor.then(function (result) {
+                sensor.then(function (result) {                    
                     if (result.records[0]) {
-                        var newSensor = session.run("MATCH (h:House {hid:{hid}}) CREATE ((h) -[r:Has]-> (s:Sensor{sid:{sid},type:{type},attributes:{attributes}}));", {hid: requestBody.hid, sid: requestBody.sid, type: requestBody.type, attributes: requestBody.attributes});
+                        var newSensor = session.run("MATCH (h:House {hid:{hid}}) CREATE ((h) -[r:Has]-> (s:Sensor{sid:{sid},location:{location},type:{type},attributes:{attributes}}));", {hid: requestBody.hid, sid: requestBody.sid, location: requestBody.location, type: requestBody.type, attributes: requestBody.attributes});
                         newSensor.then(function () {
                             session.close();
                             resolve(new Sensor(requestBody));

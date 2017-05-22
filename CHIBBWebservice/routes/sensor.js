@@ -44,7 +44,7 @@ router.get('/', function (req, res) {
     });
 });
 
-router.get('/:id', function (req, res) {
+router.get('/house/:id', function (req, res) {
     var getPromise = sensorModel.getSensorsFromHouseId(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function (data) {
         if (data.length > 0) {

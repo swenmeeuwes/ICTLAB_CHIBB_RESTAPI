@@ -61,7 +61,7 @@ router.post('/login', function (req, res) {
         var token = jwt.sign({
             username: username
             // Doesn't need a timestamp?
-        }, secret, {expiresIn: '1h'});
+        }, secret, {expiresIn: '12h'});
 
         res.ok({token: token});
     }).catch(function (error) {

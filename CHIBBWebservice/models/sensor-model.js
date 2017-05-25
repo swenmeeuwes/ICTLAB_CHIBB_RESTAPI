@@ -83,15 +83,14 @@ SensorModel.getSensorsFromHouseId = function (session, username, hid) {
 
 SensorModel.getById = function (session, username, sid) {
     return new Promise(function (resolve, reject) {
-        var sensors = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor {sid:{sid}}) RETURN s AS Sensor;", {username: username, sid: sid});
+        var sensors = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor {sid:{sid}}) RETURN s AS Sensor, h AS House;", {username: username, sid: sid});
         sensors.then(function (result) {
             if (result.records[0]) {
-                var sensorArray = [];
-                for (var i = 0; i < result.records.length; i++) {
-                    sensorArray.push(new Sensor(result.records[i]._fields[0].properties));
-                }
+                var sensorProperties = result.records[0].get('Sensor').properties;               
+                sensorProperties.hid = result.records[0].get('House').properties.hid; // inject hid prop
+                
                 session.close();
-                resolve(sensorArray);
+                resolve([new Sensor(sensorProperties)]);
             } else {
                 session.close();
                 resolve([], {message: "House does not exist or is not yours!"});

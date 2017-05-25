@@ -187,7 +187,7 @@ SensorModel.getData = function (session, username, sid) {
                     if (result.records[0]) {
                         var recordsArray = [];
                         for (var i = 0; i < result.records.length; i++) {
-                            recordsArray.push(new RecordModel(result.records[i]._fields[0].properties, sensor.attributes));
+                            recordsArray.push(new RecordModel.constructor(result.records[i]._fields[0].properties, sensor.attributes));
                         }
                         session.close();
                         resolve(recordsArray);

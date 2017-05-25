@@ -68,7 +68,7 @@ router.get('/id/:id', function (req, res) {
     });
 });
 
-router.get('/id/data/:id', function (req, res, next) {
+router.get('/data/:id', function (req, res, next) {
     var getPromise = sensorModel.getData(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function (data) {
 //        if (data.length > 0) {

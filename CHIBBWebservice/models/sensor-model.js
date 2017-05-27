@@ -182,7 +182,7 @@ SensorModel.getData = function (session, username, sid) {
 //        sensors.then(function (result) {
 //            if (result.records[0]) {
 //                var sensor = new Sensor(result.records[0]._fields[0].properties);
-                var records = session.run("MATCH (s:Sensor {sid:{sid}}) -[:Has_record]-> (re:Record) return re AS Record, s AS Sensor;", {sid: sid});
+                var records = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor {sid:{sid}}) -[:Has_record]-> (re:Record) return re AS Record, s AS Sensor;", {sid: sid});
                 records.then(function (result) {
                     if (result.records[0]) {
                         var recordsArray = [];

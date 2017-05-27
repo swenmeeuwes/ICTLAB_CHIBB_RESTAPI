@@ -80,7 +80,7 @@ router.get('/data/:id', function (req, res, next) {
     })
             .catch(function (error) {
                 // only reject case here is: sensor not found
-                res.notFound("Sensor with that id does not exist!");
+                res.notfound("Sensor with that id does not exist!");
             });
 });
 

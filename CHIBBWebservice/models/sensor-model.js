@@ -197,12 +197,56 @@ SensorModel.getData = function (session, username, sid) {
                         resolve([]);
                     }
                 }).catch(function (error) {
+                    session.close();
                     reject({message: "Sensor with that id does not exist!"});
                 });
 //            } else {
 //                reject({message: "Sensor with that id does not exist!"});
 //            }
 //        });
+    });
+};
+
+SensorModel.getStatus = function (session, username, sid) {
+    return new Promise(function (resolve, reject) {
+        // Get latest record from sensor
+        var records = session.run("MATCH (s:Sensor {sid:{sid}}) -[:Has_record]-> (r:Record) return r AS Record ORDER BY r.timestamp DESC LIMIT 1;", {username: username, sid: sid});
+        records.then(function (result) {
+            var status = "Unknown";
+            var batteryLevel = -1;
+            if (result.records[0]) {
+                var record = result.records[0].get('Record').properties;
+                
+                batteryLevel = record.sensorBatteryLevel;
+                
+                var now = Date.now();
+                var latestTimestamp = record.timestamp;
+                
+//              If a sensor node has not sent sensor data for more than 3
+//              seconds it gets status “intermittent failures”, in case
+//              sensordata is not received for more than 30 seconds it
+//              gets status “inactive”
+                if(latestTimestamp < now - 30 * 1000)
+                    status = "Inactive";
+                else if(latestTimestamp < now - 3 * 1000)
+                    status = "Intermittent failures";
+                else
+                    status = "Active";
+            } else {
+                // Sensor has no records and thus is 'clean'
+                status = "Clean";
+            }
+            
+            session.close();
+            resolve({
+                sid: sid,
+                status: status,
+                batteryLevel: batteryLevel
+            });
+        }).catch(function (error) {
+            session.close();
+            reject({message: "Sensor with that id does not exist!"});
+        });
     });
 };
 

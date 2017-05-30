@@ -210,10 +210,10 @@ SensorModel.getData = function (session, username, sid) {
 SensorModel.getStatus = function (session, username, sid) {
     return new Promise(function (resolve, reject) {
         // Get latest record from sensor
-        var records = session.run("MATCH (s:Sensor {sid:{sid}}) -[:Has_record]-> (r:Record) return r AS Record ORDER BY r.timestamp DESC LIMIT 1;", {username: username, sid: sid});
+        var records = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor {sid:{sid}})-[:Has_record]->(r:Record) return r AS Record ORDER BY r.timestamp DESC LIMIT 1;", {username: username, sid: sid});
         records.then(function (result) {
             var status = "Unknown";
-            var batteryLevel = -1;
+            var batteryLevel = null;
             if (result.records[0]) {
                 var record = result.records[0].get('Record').properties;
                 

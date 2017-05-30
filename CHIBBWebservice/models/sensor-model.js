@@ -42,12 +42,15 @@ SensorModel.constructor = Sensor;
 
 SensorModel.getUserSensors = function (session, username) {
     return new Promise(function (resolve, reject) {
-        var sensors = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor) RETURN s AS Sensor;", {username: username});
+        var sensors = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor) RETURN s AS Sensor, h AS House;", {username: username});
         sensors.then(function (result) {
             if (result.records[0]) {
                 var sensorArray = [];
                 for (var i = 0; i < result.records.length; i++) {
-                    sensorArray.push(new Sensor(result.records[i]._fields[0].properties));
+                    var record = result.records[i];
+                    var sensorProps = record.get('Sensor').properties;
+                    sensorProps.hid = record.get('House').properties.hid;
+                    sensorArray.push(new Sensor(sensorProps));
                 }
                 session.close();
                 resolve(sensorArray);

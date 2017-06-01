@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "description": "A RESTful API for the CHIBB project",
-  "author": "Swen Meeuwes <swenmeeu@gmail.com>",
+  "author": "Swen Meeuwes <swenmeeu@gmail.com>, Jesse van Breda",
   "scripts": {
-    "start": "node main.js"
+    "start": "node main.js",
+    "apidoc": "apidoc -i ./routes/ -o ./apidoc"
   },
   "main": "main.js",
   "license": "MIT",
@@ -18,5 +19,8 @@
     "jsonwebtoken": "^7.3.0",
     "neo4j-driver": "^1.1.0",
     "randomstring": "^1.1.5"
+  },
+  "devDependencies": {
+    "apidoc": "^0.17.6"
   }
 }

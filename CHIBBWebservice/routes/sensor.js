@@ -56,6 +56,52 @@ router.get('/house/:id', function (req, res) {
     });
 });
 
+/**
+ * @api {get} /sensor/id/:id Request Sensor info
+ * @apiVersion 0.0.1
+ * @apiName GetSensorById
+ * @apiGroup Sensor
+ *
+ * @apiParam {String} id Sensors unique ID.
+ *
+ * @apiSuccess {Number} statusCode The reponse status code.
+ * @apiSuccess {String} statusMessage A readable response status code.
+ * @apiSuccess {String} sid The unique identifier of the Sensor.
+ * @apiSuccess {String} hid The unique identifier of the House.
+ * @apiSuccess {String} location The human-readable location of the Sensor.
+ * @apiSuccess {String} type The type of the Sensor.
+ * @apiSuccess {String[]} attributes The attributes that the Sensor tracks.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.0 200 OK
+ *     {
+ *       "statusCode": 200,
+ *       "statusMessage": "OK",
+ *       "result": [
+ *          {
+ *              "sid": "2ke98E37YeVh",
+ *              "hid": "i3djTejk35e82",
+ *              "location": "Livingroom",
+ *              "type": "Temperature",
+ *              "attributes": [
+ *                  "timestamp",
+ *                  "unit",
+ *                  "value"
+ *              ]
+ *          }
+ *       ],
+ *       "resultLength": 1
+ *     }
+ *
+ * @apiError SensorNotFound The id of the Sensor was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.0 404 Not Found
+ *     {
+ *       "statusCode": 404,
+ *       "statusMessage": "Not Found"
+ *     }
+ */
 router.get('/id/:id', function (req, res) {
     var getPromise = sensorModel.getById(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function (data) {
@@ -75,6 +121,48 @@ router.get('/status/:id', function (req, res) {
     });
 });
 
+/**
+ * @api {get} /sensor/data/:id Request Sensor data
+ * @apiVersion 0.0.1
+ * @apiName GetSensorData
+ * @apiGroup Sensor
+ *
+ * @apiParam {String} id Sensors unique ID.
+ *
+ * @apiSuccess {Number} statusCode The reponse status code.
+ * @apiSuccess {String} statusMessage A readable response status code.
+ * @apiSuccess {Record[]} result An array of records.
+ * @apiSuccess {Number} resultLength Length of the result array.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.0 200 OK
+ *     {
+ *       "statusCode": 200,
+ *       "statusMessage": "OK",
+ *       "result": [
+ *          {
+ *              "timestamp": 1496327072,
+ *              "unit": "Celcius",
+ *              "value": 18
+ *          },
+ *          {
+ *              "timestamp": 1496328072,
+ *              "unit": "Celcius",
+ *              "value": 16
+ *          }
+ *       ],
+ *       "resultLength": 2
+ *     }
+ *
+ * @apiError SensorNotFound The id of the Sensor was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.0 404 Not Found
+ *     {
+ *       "statusCode": 404,
+ *       "statusMessage": "Not Found"
+ *     }
+ */
 router.get('/data/:id', function (req, res, next) {
     var getPromise = sensorModel.getData(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function (data) {

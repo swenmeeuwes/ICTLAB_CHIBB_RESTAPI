@@ -253,6 +253,28 @@ SensorModel.getStatus = function (session, username, sid) {
     });
 };
 
+SensorModel.getLatestData = function (session, username, sid) {
+    return new Promise(function (resolve, reject) {
+        // Get latest record from sensor
+        var records = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor {sid:{sid}})-[:Has_record]->(r:Record) return r AS Record, s AS Sensor ORDER BY r.timestamp DESC LIMIT 1;", {username: username, sid: sid});
+        records.then(function (result) {
+            if (result.records[0]) {
+                var sensor = result.records[0].get('Sensor').properties;
+                var latestRecord = new RecordModel.constructor(result.records[0].get('Record').properties, sensor.attributes);
+                session.close();
+                resolve(latestRecord);
+            } else {
+                session.close();
+                resolve([]);
+            }
+        }).catch(function (error) {
+            session.close();
+            reject({message: "Sensor with that id does not exist or is not yours!"});
+        });
+    });
+};
+    
+
 module.exports = SensorModel;
 
 

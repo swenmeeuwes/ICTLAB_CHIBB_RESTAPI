@@ -157,6 +157,15 @@ router.get('/status/:id', function (req, res) {
     });
 });
 
+router.get('/latest/:id', function(req, res){
+    var getPromise = sensorModel.getLatestData(dbConnector.getSession(req), res.locals.username, req.params.id);
+    getPromise.then(function (data) {
+        res.ok(data);
+    }).catch(function(error){
+        console.log(error);
+    })
+})
+
 /**
  * @api {get} /sensor/data/:id Request Sensor data
  * @apiVersion 0.0.1

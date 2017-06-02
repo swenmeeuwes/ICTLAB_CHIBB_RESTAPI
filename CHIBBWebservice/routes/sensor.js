@@ -163,8 +163,17 @@ router.get('/latest/:id', function(req, res){
         res.ok(data);
     }).catch(function(error){
         console.log(error);
-    })
-})
+    });
+});
+
+router.get('/data/:id/:fromTime/:toTime', function(req, res){
+    var getPromise = sensorModel.getDataWithinTimeframe(dbConnector.getSession(req), res.locals.username, req.params.id, req.params.fromTime, req.params.toTime);
+    getPromise.then(function (data) {
+        res.ok(data);
+    }).catch(function(error){
+        console.log(error);
+    });
+});
 
 /**
  * @api {get} /sensor/data/:id Request Sensor data

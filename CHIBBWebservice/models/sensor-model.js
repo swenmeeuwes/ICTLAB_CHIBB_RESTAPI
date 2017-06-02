@@ -273,6 +273,37 @@ SensorModel.getLatestData = function (session, username, sid) {
         });
     });
 };
+
+SensorModel.getDataWithinTimeframe = function (session, username, sid, fromTime, toTime) {
+    return new Promise(function (resolve, reject) {
+        fromTime = Number.parseInt(fromTime);
+        toTime = Number.parseInt(toTime);
+        var records = session.run("MATCH (u:User {username:{username}})-[:Owns]->(h:House)-[:Has]->(s:Sensor{sid:{sid}})-[:Has_record]->(r:Record) WHERE r.timestamp > {fromTime} AND r.timestamp < {toTime} RETURN r AS Record, s AS Sensor;", {username: username, sid: sid, fromTime: fromTime, toTime: toTime});
+        records.then(function (result) {
+            if (result.records[0]) {
+                var recordsArray = [];
+                var sensor = result.records[0].get('Sensor').properties;
+                for (var i = 0; i < result.records.length; i++) {
+                    recordsArray.push(new RecordModel.constructor(result.records[i].get('Record').properties, sensor.attributes));
+                }
+                session.close();
+                resolve(recordsArray);
+            } else {
+                session.close();
+                resolve([]);
+            }
+        }).catch(function (error) {
+            session.close();
+            reject({message: "Sensor with that id does not exist!"});
+        });
+//            } else {
+//                reject({message: "Sensor with that id does not exist!"});
+//            }
+//        });
+    });
+};
+
+
     
 
 module.exports = SensorModel;

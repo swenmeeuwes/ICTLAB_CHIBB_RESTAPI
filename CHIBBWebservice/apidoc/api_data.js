@@ -185,5 +185,60 @@ define({ "api": [
     },
     "filename": "routes/sensor.js",
     "groupTitle": "Sensor"
+  },
+  {
+    "type": "get",
+    "url": "/sensor/status/:id",
+    "title": "Request Sensor status",
+    "version": "0.0.1",
+    "name": "GetSensorStatus",
+    "group": "Sensor",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Sensors unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "batteryLevel",
+            "description": "<p>Percentage of battery remaining.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>The current status of the requested sensor: Clean (sensor does not exists), Active (running), Intermittent failures (no data for 3 sec), Inactive (no data for 30 sec).</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response (sensor exists):",
+          "content": "HTTP/1.0 200 OK\n {\n     \"statusCode\": 200,\n     \"statusMessage\": \"OK\",\n     \"result\": {\n         \"sid\": \"t1\",\n         \"status\": \"Inactive\",\n         \"batteryLevel\": 65\n     }\n }",
+          "type": "json"
+        },
+        {
+          "title": "Success-Response (sensor does not exists):",
+          "content": "HTTP/1.0 200 OK\n {\n     \"statusCode\": 200,\n     \"statusMessage\": \"OK\",\n     \"result\": {\n         \"sid\": \"t4\",\n         \"status\": \"Clean\",\n         \"batteryLevel\": null\n     }\n }",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "routes/sensor.js",
+    "groupTitle": "Sensor"
   }
 ] });

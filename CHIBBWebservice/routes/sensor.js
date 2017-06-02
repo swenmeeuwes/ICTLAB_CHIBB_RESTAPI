@@ -114,6 +114,42 @@ router.get('/id/:id', function (req, res) {
     });
 });
 
+/**
+ * @api {get} /sensor/status/:id Request Sensor status
+ * @apiVersion 0.0.1
+ * @apiName GetSensorStatus
+ * @apiGroup Sensor
+ *
+ * @apiParam {String} id Sensors unique ID.
+ *
+ * @apiSuccess {Number} batteryLevel Percentage of battery remaining.
+ * @apiSuccess {String} status The current status of the requested sensor: Clean (sensor does not exists), Active (running), Intermittent failures (no data for 3 sec), Inactive (no data for 30 sec).
+ *
+ * @apiSuccessExample Success-Response (sensor exists):
+ *     HTTP/1.0 200 OK
+ *      {
+ *          "statusCode": 200,
+ *          "statusMessage": "OK",
+ *          "result": {
+ *              "sid": "t1",
+ *              "status": "Inactive",
+ *              "batteryLevel": 65
+ *          }
+ *      }   
+ *
+ *  @apiSuccessExample Success-Response (sensor does not exists):
+ *     HTTP/1.0 200 OK
+ *      {
+ *          "statusCode": 200,
+ *          "statusMessage": "OK",
+ *          "result": {
+ *              "sid": "t4",
+ *              "status": "Clean",
+ *              "batteryLevel": null
+ *          }
+ *      }   
+ *
+ */
 router.get('/status/:id', function (req, res) {
     var getPromise = sensorModel.getStatus(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function (data) {

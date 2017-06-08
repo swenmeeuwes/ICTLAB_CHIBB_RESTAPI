@@ -111,10 +111,27 @@
     </target>
     
     <target name="build" depends="clean, init, configure, install_modules, generate_apidoc">
+        <!--Move processed files to release directory-->
+        <move todir="${release.dir}" overwrite="true">
+            <fileset dir="${temp.dir}" />
+        </move>        
         
+        <!--Clean temp directory-->
+        <echo>Cleaning up ...</echo>
+        <delete dir="${temp.dir}"/>
+        
+        <echo>Build is done!</echo>
     </target>
 
     <target name="deploy" depends="build">
-        
+        <echo>Starting deployment via FTP ...</echo>
+        <echo>Deploying to: ${ftp.server}:${ftp.port}</echo>
+        <ftp server="${ftp.server}"
+            userid="${ftp.user}"
+            password="${ftp.password}"
+            port="${ftp.port}">
+            <fileset dir="${release.dir}"/>
+        </ftp>
+        <echo>Deployment done!</echo>
     </target>
 </project>

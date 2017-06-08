@@ -166,6 +166,50 @@ router.get('/latest/:id', function(req, res){
     });
 });
 
+/**
+ * @api {get} /sensor/data/:id/:fromTime/:toTime Request Sensor data
+ * @apiVersion 0.0.1
+ * @apiName GetSensorData
+ * @apiGroup Sensor
+ *
+ * @apiParam {String} id Sensors unique ID.
+ * @apiParam {String} fromTime Defined the begin of the time frame in an unix timestamp.
+ * @apiParam {String} toTime Defined the end of the time frame in an unix timestamp.
+ *
+ * @apiSuccess {Number} statusCode The reponse status code.
+ * @apiSuccess {String} statusMessage A readable response status code.
+ * @apiSuccess {Record[]} result An array of records.
+ * @apiSuccess {Number} resultLength Length of the result array.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.0 200 OK
+ *     {
+ *       "statusCode": 200,
+ *       "statusMessage": "OK",
+ *       "result": [
+ *          {
+ *              "timestamp": 1496327072,
+ *              "unit": "Celcius",
+ *              "value": 18
+ *          },
+ *          {
+ *              "timestamp": 1496328072,
+ *              "unit": "Celcius",
+ *              "value": 16
+ *          }
+ *       ],
+ *       "resultLength": 2
+ *     }
+ *
+ * @apiError SensorNotFound The id of the Sensor was not found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.0 404 Not Found
+ *     {
+ *       "statusCode": 404,
+ *       "statusMessage": "Not Found"
+ *     }
+ */
 router.get('/data/:id/:fromTime/:toTime', function(req, res){
     var getPromise = sensorModel.getDataWithinTimeframe(dbConnector.getSession(req), res.locals.username, req.params.id, req.params.fromTime, req.params.toTime);
     getPromise.then(function (data) {

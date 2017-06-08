@@ -1,0 +1,118 @@
+<!--
+| build.xml
+| Created on 08-06-2017
+| @author Swen Meeuwes
+-->
+<project name="CHIBB RESTful webservice" basedir="..">
+    <!--Properties-->           
+    <property name="src.dir" value="${basedir}/src"/>
+    
+    <property name="buildtools.dir" value="${basedir}/build_tools"/>
+    <property name="properties.postfix" value="properties"/>        
+    
+    <property name="yuicompressor.loc" value="${buildtools.dir}/lib/yuicompressor/yuicompressor-2.4.8.jar"/>        
+    
+    <property name="temp.dir" value="${basedir}/target/temp"/>
+    <property name="release.dir" value="${basedir}/target/release"/>
+    
+    <property name="defaultconfig.loc" value="assets/config/default.json"/>
+    <property name="productionconfig.loc" value="assets/config/productionconfig.json"/>
+    
+    <!--Default values for Jenkins and property files-->
+    <!--Jenkins defaults-->
+    <property name="target.platform" value="development"/>
+    <property name="db_user" value="neo4j"/>
+    <property name="db_password" value="admin"/>
+    <!--Property file defaults-->
+    <property name="bolt_host" value="localhost"/>
+    <property name="bolt_port" value="7687"/>    
+    <property name="webservice.port" value="443"/>
+    
+    <!--Load the properties file-->
+    <echo>Loading property file: ${buildtools.dir}/${target.platform}.${properties.postfix}</echo>
+    <property file="${buildtools.dir}/${target.platform}.${properties.postfix}" />        
+    
+    <!--Announcement-->
+    <echo>Running for target platform: ${target.platform}</echo>
+    <echo>Base directory: ${basedir}</echo>
+    
+    <!--Targets-->
+    <target name="clean">
+        <delete dir="target"/>
+    </target>
+    
+    <target name="init">
+        <!--Create directories if needed-->
+        <mkdir dir="${temp.dir}"/>
+        <mkdir dir="${release.dir}"/>
+        
+        <copy todir="${temp.dir}" overwrite="yes">
+            <fileset dir="${src.dir}">
+                <exclude name="apidoc/**"></exclude>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="compress" depends="init">
+        <echo>Compressing javascript files ...</echo>
+        <apply executable="java" parallel="false" dest="${temp.dir}">
+            <fileset dir="${temp.dir}" includes="**/*.js" />
+            <arg line="-jar"/>
+            <arg path="${yuicompressor.loc}" />
+            <arg line="-v"/>
+            <srcfile/>
+            <arg line="-o"/>
+            <mapper type="glob" from="*.js" to="*-min.js"/>
+            <targetfile/>
+        </apply>
+        <move todir="${release.loc}" overwrite="true">
+            <fileset dir="${temp.dir}" />
+            <mapper type="glob" from="*-min.js" to="*.js"/>
+        </move>
+        <echo>Done compressing javascript files!</echo>
+    </target>
+    
+    <target name="install_modules" depends="init">
+        <echo>Installing node modules ...</echo>
+        <exec dir="${temp.dir}" executable="npm.cmd" failonerror="true">
+            <arg value="install"></arg>
+        </exec>
+        <echo>Done installing node modules!</echo>
+    </target>
+    
+    <target name="configure" depends="init">
+        <echo>Configuring config files ...</echo>
+        
+        <echo>Configuring database user and password ...</echo>
+        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"db_user":(.*)' replace='"db_user": ${db_user}' byline="true" />
+        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"db_password":(.*)' replace='"db_password": ${db_password}' byline="true" />
+        
+        <echo>Setting Bolt host to: ${bolt_host}</echo>
+        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"bolt_host":(.*)' replace='"bolt_host": ${bolt_host}' byline="true" />
+        
+        <echo>Setting Bolt port to: ${bolt_port}</echo>
+        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"bolt_port":(.*)' replace='"bolt_port": ${bolt_port}' byline="true" />
+        
+        <echo>Setting webservice port to: ${webservice.port}</echo>
+        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"webservice_port":(.*)' replace='"port": ${webservice.port}' byline="true" />
+        
+        <echo>Done configuring config files ...</echo>
+    </target>
+    
+    <target name="generate_apidoc" depends="init, install_modules">
+        <echo>Generating apidoc ...</echo>
+        <exec dir="${temp.dir}" executable="npm.cmd" failonerror="true">
+            <arg value="run"></arg>
+            <arg value="apidoc"></arg>
+        </exec>
+        <echo>Done generating apidoc!</echo>
+    </target>
+    
+    <target name="build" depends="clean, init, configure, install_modules, generate_apidoc">
+        
+    </target>
+
+    <target name="deploy" depends="build">
+        
+    </target>
+</project>

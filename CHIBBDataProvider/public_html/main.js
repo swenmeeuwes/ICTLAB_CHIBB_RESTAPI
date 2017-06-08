@@ -1,3 +1,8 @@
+// A dirty quick fix for the fact that there are no sensors available :/
+// This script keeps sending http post requests to the CHIBB RESTfull webservice
+// Values are generated with Perlin Noise, which results in 'smooth random' results
+// Because of this the visualisations will look like they make more sense, even though the data is random 
+
 var request = require('request');
 var perlinGenerator = require("proc-noise");
 var perlin = new perlinGenerator();

@@ -168,7 +168,7 @@ router.get('/latest/:id', function(req, res){
 });
 
 /**
- * @api {get} /sensor/data/:id/:fromTime/:toTime Request Sensor data
+ * @api {get} /sensor/data/:id/:fromTime/:toTime Request Sensor data within a timeframe
  * @apiVersion 0.0.1
  * @apiName GetSensorData
  * @apiGroup Sensor

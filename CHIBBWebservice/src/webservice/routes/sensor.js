@@ -125,7 +125,7 @@ router.get('/id/:id', function (req, res) {
  * @apiSuccess {Number} batteryLevel Percentage of battery remaining.
  * @apiSuccess {String} status The current status of the requested sensor: Clean (sensor does not exists), Active (running), Intermittent failures (no data for 3 sec), Inactive (no data for 30 sec).
  *
- * @apiSuccessExample Success-Response (sensor exists):
+ * @apiSuccessExample Success-Response (sensor exists and has data):
  *     HTTP/1.0 200 OK
  *      {
  *          "statusCode": 200,
@@ -137,7 +137,7 @@ router.get('/id/:id', function (req, res) {
  *          }
  *      }   
  *
- *  @apiSuccessExample Success-Response (sensor does not exists):
+ *  @apiSuccessExample Success-Response (sensor is clean):
  *     HTTP/1.0 200 OK
  *      {
  *          "statusCode": 200,

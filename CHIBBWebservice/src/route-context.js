@@ -8,8 +8,8 @@
 
 var express = require('express');
 var path = require('path');
-var isAuthenticated = require('./middlewares/is-authenticated');
-var routes = require('./routes');
+var isAuthenticated = require('./webservice/middlewares/is-authenticated');
+var routes = require('./webservice/routes');
 
 exports.configure = function(router) {
     // ApiDocs

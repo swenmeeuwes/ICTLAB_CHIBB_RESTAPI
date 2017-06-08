@@ -15,7 +15,7 @@ var dbConnector = require('../database/database-connector');
 
 //var secret = require('../providers/token-secret-provider'); // The way it could be :c
 var fs = require('fs');
-var secret = fs.readFileSync('./config/token.secret', 'utf8');
+var secret = fs.readFileSync('./assets/token.secret', 'utf8');
 
 var SHA256 = require('crypto-js/sha256');
 var randomString = require('randomstring');

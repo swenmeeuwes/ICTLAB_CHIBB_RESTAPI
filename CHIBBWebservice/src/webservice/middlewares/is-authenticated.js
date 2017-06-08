@@ -8,9 +8,9 @@
 
 var jwt = require('jsonwebtoken');
 
-//var secret = require('../providers/token-secret-provider'); // The way it could be :c
+//var secret = require('../providers/token-secret-provider'); // The way it should be :c
 var fs = require('fs');
-var secret = fs.readFileSync('./config/token.secret', 'utf8');
+var secret = fs.readFileSync('./assets/token.secret', 'utf8');
 
 module.exports = function (req, res, next) {
     var token = req.query.token;

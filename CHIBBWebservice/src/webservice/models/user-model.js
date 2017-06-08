@@ -79,10 +79,4 @@ UserModel.getAll = function (session) {
     });
 };
 
-UserModel.getByID = function (session, id) {
-    // return promise
-
-    session.close();
-};
-
 module.exports = UserModel;

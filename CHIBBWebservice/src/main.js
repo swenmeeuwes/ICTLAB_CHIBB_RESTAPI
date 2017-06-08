@@ -12,8 +12,8 @@ var cors = require('cors');
 
 var routeContext = require('./route-context');
 
-// Use (custom) extension methods for the response object
-var responseWrapper = require('./helpers/response-wrapper-extensions');
+// Add (custom) extension methods for the express response object
+require('./webservice/helpers/response-wrapper-extensions');
 
 var app = express();
 

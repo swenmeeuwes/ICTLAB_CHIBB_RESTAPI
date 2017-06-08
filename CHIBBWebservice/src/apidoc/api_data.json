@@ -100,7 +100,7 @@
         }
       ]
     },
-    "filename": "src/routes/sensor.js",
+    "filename": "./webservice/routes/sensor.js",
     "groupTitle": "Sensor"
   },
   {
@@ -183,7 +183,7 @@
         }
       ]
     },
-    "filename": "src/routes/sensor.js",
+    "filename": "./webservice/routes/sensor.js",
     "groupTitle": "Sensor"
   },
   {
@@ -238,7 +238,7 @@
         }
       ]
     },
-    "filename": "src/routes/sensor.js",
+    "filename": "./webservice/routes/sensor.js",
     "groupTitle": "Sensor"
   }
 ]

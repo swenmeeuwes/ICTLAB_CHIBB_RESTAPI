@@ -100,7 +100,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/sensor.js",
+    "filename": "src/routes/sensor.js",
     "groupTitle": "Sensor"
   },
   {
@@ -183,7 +183,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/sensor.js",
+    "filename": "src/routes/sensor.js",
     "groupTitle": "Sensor"
   },
   {
@@ -238,7 +238,7 @@ define({ "api": [
         }
       ]
     },
-    "filename": "routes/sensor.js",
+    "filename": "src/routes/sensor.js",
     "groupTitle": "Sensor"
   }
 ] });

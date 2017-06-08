@@ -24,16 +24,16 @@ function sendDummyData() {
                 "id": "t2",
                 "timestamp": Date.now(),
                 "sensorState": "online",
-                "sensorBatteryLevel": 50,
+                "sensorBatteryLevel": 12,
                 "type": "temperature",
                 "unit": "Celsius",
                 "value": perlin1.noise(perlinIndex + 500) * 45 - 15
             },
             {
-                "id": "t2",
+                "id": "t3",
                 "timestamp": Date.now(),
                 "sensorState": "online",
-                "sensorBatteryLevel": 50,
+                "sensorBatteryLevel": 52,
                 "type": "temperature",
                 "unit": "Celsius",
                 "value": perlin2.noise(perlinIndex + 250) * 45 - 15

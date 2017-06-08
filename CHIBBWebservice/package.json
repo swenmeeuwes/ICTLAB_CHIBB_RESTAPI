@@ -5,8 +5,8 @@
   "description": "A RESTful API for the CHIBB project",
   "author": "Swen Meeuwes <swenmeeu@gmail.com>, Jesse van Breda",
   "scripts": {
-    "start": "node main.js",
-    "apidoc": "apidoc -i ./routes/ -o ./apidoc"
+    "start": "cd src && node main.js",
+    "apidoc": "apidoc -i ./src/ -o ./apidoc"
   },
   "main": "main.js",
   "license": "MIT",

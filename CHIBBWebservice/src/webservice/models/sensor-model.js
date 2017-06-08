@@ -229,9 +229,9 @@ SensorModel.getStatus = function (session, username, sid) {
 //              seconds it gets status “intermittent failures”, in case
 //              sensordata is not received for more than 30 seconds it
 //              gets status “inactive”
-                if(latestTimestamp < now - 30 * 1000)
+                if(latestTimestamp < now - 50 * 1000)
                     status = "Inactive";
-                else if(latestTimestamp < now - 3 * 1000)
+                else if(latestTimestamp < now - 15 * 1000)
                     status = "Intermittent failures";
                 else
                     status = "Active";
@@ -296,10 +296,6 @@ SensorModel.getDataWithinTimeframe = function (session, username, sid, fromTime,
             session.close();
             reject({message: "Sensor with that id does not exist!"});
         });
-//            } else {
-//                reject({message: "Sensor with that id does not exist!"});
-//            }
-//        });
     });
 };
 

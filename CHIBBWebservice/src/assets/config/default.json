@@ -2,7 +2,7 @@
     "dbConfig": {
         "protocol": "bolt",
         "bolt_host": "localhost",
-        "bolt_port": "7687",
+        "bolt_port": 7687,
         "db_user": "neo4j",
         "db_password": "admin"
     },

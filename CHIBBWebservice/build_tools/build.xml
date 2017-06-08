@@ -4,6 +4,9 @@
 | @author Swen Meeuwes
 -->
 <project name="CHIBB RESTful webservice" basedir="..">
+    <!--Default target.platform if not specified in command parameters-->
+    <property name="target.platform" value="development"/>
+    
     <!--Properties-->           
     <property name="src.dir" value="${basedir}/src"/>
     
@@ -18,9 +21,11 @@
     <property name="defaultconfig.loc" value="assets/config/default.json"/>
     <property name="productionconfig.loc" value="assets/config/productionconfig.json"/>
     
-    <!--Default values for Jenkins and property files-->
+    <!--Load the property file-->    
+    <property file="${buildtools.dir}/${target.platform}.${properties.postfix}" />
+    
+    <!--Default property values for Jenkins and property files-->
     <!--Jenkins defaults-->
-    <property name="target.platform" value="development"/>
     <property name="db_user" value="neo4j"/>
     <property name="db_password" value="admin"/>
     <!--Property file defaults-->
@@ -28,11 +33,8 @@
     <property name="bolt_port" value="7687"/>    
     <property name="webservice.port" value="443"/>
     
-    <!--Load the properties file-->
-    <echo>Loading property file: ${buildtools.dir}/${target.platform}.${properties.postfix}</echo>
-    <property file="${buildtools.dir}/${target.platform}.${properties.postfix}" />        
-    
-    <!--Announcement-->
+    <!--Announcements-->
+    <echo>Loaded property file: ${buildtools.dir}/${target.platform}.${properties.postfix}</echo>
     <echo>Running for target platform: ${target.platform}</echo>
     <echo>Base directory: ${basedir}</echo>
     
@@ -84,17 +86,17 @@
         <echo>Configuring config files ...</echo>
         
         <echo>Configuring database user and password ...</echo>
-        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"db_user":(.*)' replace='"db_user": ${db_user}' byline="true" />
-        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"db_password":(.*)' replace='"db_password": ${db_password}' byline="true" />
+        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"db_user":(.*)' replace='"db_user": "${db_user}",' byline="true" />
+        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"db_password":(.*)' replace='"db_password": "${db_password}"' byline="true" />
         
         <echo>Setting Bolt host to: ${bolt_host}</echo>
-        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"bolt_host":(.*)' replace='"bolt_host": ${bolt_host}' byline="true" />
+        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"bolt_host":(.*)' replace='"bolt_host": "${bolt_host}",' byline="true" />
         
         <echo>Setting Bolt port to: ${bolt_port}</echo>
-        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"bolt_port":(.*)' replace='"bolt_port": ${bolt_port}' byline="true" />
+        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"bolt_port":(.*)' replace='"bolt_port": ${bolt_port},' byline="true" />
         
         <echo>Setting webservice port to: ${webservice.port}</echo>
-        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"webservice_port":(.*)' replace='"port": ${webservice.port}' byline="true" />
+        <replaceregexp file="${temp.dir}/${defaultconfig.loc}" match='"webservice_port":(.*)' replace='"webservice_port": ${webservice.port}' byline="true" />
         
         <echo>Done configuring config files ...</echo>
     </target>

@@ -157,6 +157,7 @@ router.get('/status/:id', function (req, res) {
     });
 });
 
+// Shouldn't this be /data/latest/:id , since latest on itself doesn't say anything about the response/ content
 router.get('/latest/:id', function(req, res){
     var getPromise = sensorModel.getLatestData(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function (data) {

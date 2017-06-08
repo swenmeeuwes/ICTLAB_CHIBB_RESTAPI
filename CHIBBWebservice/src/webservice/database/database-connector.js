@@ -2,18 +2,13 @@
  * database-connector.js
  * Created on 16-02-2017
  * @author Swen Meeuwes
- * 
- * Wish: Implement a 'database switch' setting an attribute in the config file to 'remote' will use remote database, 'local' will use local db
- *       'neo4j-local-xxx': host/ post/ ...
- *       'neo4j-remote-xxx': ...
- *       'neo4j-env': 'local'/ 'remote' (where 'local' is default)
  **/
 
 var config = require('config');
 var neo4j = require('neo4j-driver').v1;
 
 var dbConfig = config.get('dbConfig');
-var driver = neo4j.driver(dbConfig.protocol + "://" + dbConfig.host + ":" + dbConfig.port, neo4j.auth.basic(dbConfig.user, dbConfig.password));
+var driver = neo4j.driver(dbConfig.protocol + "://" + dbConfig.bolt_host + ":" + dbConfig.bolt_port, neo4j.auth.basic(dbConfig.db_user, dbConfig.db_password));
 
 var databaseConnector = {};
 

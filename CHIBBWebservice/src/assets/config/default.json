@@ -1,12 +1,12 @@
 {
     "dbConfig": {
         "protocol": "bolt",
-        "host": "localhost",
-        "port": "7687",
-        "user": "neo4j",
-        "password": "admin"
+        "bolt_host": "localhost",
+        "bolt_port": "7687",
+        "db_user": "neo4j",
+        "db_password": "admin"
     },
     "webservice": {
-        "port": 8081
+        "webservice_port": 8081
     }
 }

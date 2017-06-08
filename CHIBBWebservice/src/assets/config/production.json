@@ -1,12 +1,12 @@
 {
     "dbConfig": {
         "protocol": "bolt",
-        "host": "localhost",
-        "port": "7687",
-        "user": "set-while-building",
-        "password": "set-while-building"
+        "bolt_host": "localhost",
+        "bolt_port": "7687",
+        "db_user": "set-while-building",
+        "db_password": "set-while-building"
     },
     "webservice": {
-        "port": 443
+        "webservice_port": 443
     }
 }

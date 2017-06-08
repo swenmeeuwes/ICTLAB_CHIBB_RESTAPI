@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({   // Support URL-encoded bodies
 routeContext.configure(app);
 
 // Listen at port defined in the config
-var webservice = app.listen(config.get('webservice.port'), function () {
+var webservice = app.listen(config.get('webservice.webservice_port'), function () {
     var host = webservice.address().address;
     var port = webservice.address().port;
 

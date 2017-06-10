@@ -6,7 +6,8 @@
   "author": "Swen Meeuwes <swenmeeu@gmail.com>, Jesse van Breda",
   "scripts": {
     "start": "set NODE_CONFIG_DIR=assets/config&&node main.js",
-    "apidoc": "apidoc -i ./webservice -o ./apidoc"
+    "apidoc": "apidoc -i ./webservice -o ./apidoc",
+    "test": "mocha"
   },
   "main": "main.js",
   "license": "MIT",
@@ -21,6 +22,7 @@
     "randomstring": "^1.1.5"
   },
   "devDependencies": {
-    "apidoc": "^0.17.6"
+    "apidoc": "^0.17.6",
+    "mocha": "^3.4.2"
   }
 }

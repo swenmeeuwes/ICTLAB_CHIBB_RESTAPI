@@ -78,16 +78,4 @@ router.post('/login', function (req, res) {
     });
 });
 
-router.get('/getall', function (req, res) {
-    var getPromise = userModel.getAll(dbConnector.getSession(req));
-    getPromise.then(function (data) {
-        if (data.length > 0) {
-            res.ok(data);
-        }
-        else {
-            res.nocontent(data);
-        }
-    });
-});
-
 module.exports = router;

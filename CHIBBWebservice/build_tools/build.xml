@@ -105,7 +105,7 @@
     
     <target name="test" depends="init, install_modules">
         <echo>Executing tests</echo>        
-        <exec dir="${temp.dir}" executable="npm.cmd" output="${temp.dir}/artifacts/mocha.xml" failonerror="true">
+        <exec dir="${temp.dir}" executable="npm.cmd" output="${temp.dir}/artifacts/mocha.log" failonerror="true">
             <arg value="test"></arg>
         </exec>
         <echo>Tests done!</echo>

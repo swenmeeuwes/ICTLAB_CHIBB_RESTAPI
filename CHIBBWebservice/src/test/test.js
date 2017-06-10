@@ -43,8 +43,10 @@ describe('User', function () {
     });
 
     after(function () {
-        // Cleanup user
+        // Cleanup
+        delete actualPassword;
         delete user;
+        delete tokenSecret;
     });
 
     beforeEach(function () {

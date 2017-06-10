@@ -19,19 +19,6 @@ var sensorModel = require('../models/sensor-model');
 //  next()
 //});
 
-// Dangerous route, should be removed and probably not used...
-//router.get('/getall', function (req, res) {
-//    var getPromise = sensorModel.getAllSensors(dbConnector.getSession(req));
-//    getPromise.then(function (data) {
-//        if (data.length > 0) {
-//            res.ok(data);
-//        }
-//        else {
-//            res.nocontent(data);
-//        }
-//    });
-//});
-
 router.get('/', function (req, res) {
     var getPromise = sensorModel.getUserSensors(dbConnector.getSession(req), res.locals.username);
     getPromise.then(function (data) {

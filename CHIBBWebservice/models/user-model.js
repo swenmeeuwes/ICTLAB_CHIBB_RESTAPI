@@ -60,25 +60,6 @@ UserModel.register = function (session, requestBody) {
     });
 };
 
-UserModel.getAll = function (session) {
-    return new Promise(function (resolve, reject) {
-        var users = session.run("MATCH (u:User) return u AS User;");
-        users.then(function (result) {
-            if (result.records[0]) {
-                var userArray = [];
-                for (var i = 0; i < result.records.length; i++) {
-                    userArray.push(new User(result.records[i]._fields[0].properties)); // Find a method to do this properly (result.records ... ._fields
-                }
-                session.close();
-                resolve(userArray);
-            } else {
-                session.close();
-                resolve([]);
-            }
-        });
-    });
-};
-
 UserModel.getByID = function (session, id) {
     // return promise
 

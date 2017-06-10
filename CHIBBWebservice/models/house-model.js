@@ -15,26 +15,6 @@ var House = function (properties) {
 
 HouseModel.constructor = House;
 
-// Get all houses in the database (for admin purposes)
-//HouseModel.getAllHouses = function (session) {
-//    return new Promise(function (resolve, reject) {
-//        var houses = session.run("MATCH (h:House) return h AS House;");
-//        houses.then(function (result) {
-//            if (result.records[0]) {
-//                var houseArray = [];
-//                for (var i = 0; i < result.records.length; i++) {
-//                    houseArray.push(new House(result.records[i]._fields[0].properties));
-//                }
-//                session.close();
-//                resolve(houseArray);
-//            } else {
-//                session.close();
-//                resolve([]);
-//            }
-//        });
-//    });
-//};
-
 // Get all houses owned by the logged in user
 HouseModel.getUserHouses = function (session, username) {
     return new Promise(function (resolve, reject) {

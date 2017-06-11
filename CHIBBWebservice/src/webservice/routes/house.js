@@ -19,13 +19,6 @@ var houseModel = require('../models/house-model');
 //  next()
 //});
 
-//router.get('/getall', function(req, res) {
-//    var getPromise = houseModel.getAllHouses(dbConnector.getSession(req));
-//    getPromise.then(function (data) {
-//        res.ok(data);
-//    });
-//});
-
 router.get('/', function(req, res){
     var getPromise = houseModel.getUserHouses(dbConnector.getSession(req), res.locals.username);
     getPromise.then(function(data){

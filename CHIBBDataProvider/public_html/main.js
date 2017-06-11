@@ -73,7 +73,7 @@ function generateData() {
 
 function setBatteryLife() {
     var random = Math.random();
-    if (random < 0.2) {
+    if (random < 0.02) {
         batteryLevel1--;
         batteryLevel2--;
         batteryLevel3--;
@@ -114,13 +114,12 @@ function sendDummyData() {
             console.log(body);
         }
         if (res) {
+            console.log("Send request! Got back status code: " + res.statusCode);
         }
-        console.log("Send request! Got back status code: " + res.statusCode);
+        
         if (err) {
+            console.log("Woops! " + err);
         }
-        console.log("Woops! " + err);
-
-        console.log(json);
     });
 
     if (perlinIndex < Number.MAX_SAFE_INTEGER - 501)

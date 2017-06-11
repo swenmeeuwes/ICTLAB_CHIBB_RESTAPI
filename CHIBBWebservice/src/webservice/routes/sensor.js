@@ -19,19 +19,6 @@ var sensorModel = require('../models/sensor-model');
 //  next()
 //});
 
-// Dangerous route, should be removed and probably not used...
-//router.get('/getall', function (req, res) {
-//    var getPromise = sensorModel.getAllSensors(dbConnector.getSession(req));
-//    getPromise.then(function (data) {
-//        if (data.length > 0) {
-//            res.ok(data);
-//        }
-//        else {
-//            res.nocontent(data);
-//        }
-//    });
-//});
-
 router.get('/', function (req, res) {
     var getPromise = sensorModel.getUserSensors(dbConnector.getSession(req), res.locals.username);
     getPromise.then(function (data) {
@@ -265,17 +252,11 @@ router.get('/data/:id/:fromTime/:toTime', function(req, res){
 router.get('/data/:id', function (req, res, next) {
     var getPromise = sensorModel.getData(dbConnector.getSession(req), res.locals.username, req.params.id);
     getPromise.then(function (data) {
-//        if (data.length > 0) {
         res.ok(data);
-//        }
-//        else {
-//            res.ok(data);
-//        }
-    })
-            .catch(function (error) {
-                // only reject case here is: sensor not found
-                res.notfound("Sensor with that id does not exist!");
-            });
+    }).catch(function (error) {
+        // only reject case here is: sensor not found
+        res.notfound("Sensor with that id does not exist!");
+    });
 });
 
 router.post('/', function (req, res) {

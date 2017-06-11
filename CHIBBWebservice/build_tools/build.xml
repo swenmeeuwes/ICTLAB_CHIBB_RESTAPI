@@ -13,6 +13,7 @@
     <property name="buildtools.dir" value="${basedir}/build_tools"/>
     <property name="properties.postfix" value="properties"/>        
     
+    <property name="antcontribtasks.loc" value="${buildtools.dir}/lib/antcontribtasks/ant-contrib-1.0b3.jar"/>        
     <property name="yuicompressor.loc" value="${buildtools.dir}/lib/yuicompressor/yuicompressor-2.4.8.jar"/>        
     
     <property name="artifacts.dir" value="${basedir}/target/artifacts"/>
@@ -44,7 +45,7 @@
         <delete dir="target"/>
     </target>
     
-    <target name="init">
+    <target name="init" depends="clean">
         <!--Create directories if needed-->
         <mkdir dir="${artifacts.dir}"></mkdir>
         <mkdir dir="${temp.dir}"/>
@@ -60,7 +61,7 @@
     
     <target name="compress" depends="init">
         <echo>Compressing javascript files ...</echo>
-        <apply executable="java" parallel="false" dest="${temp.dir}">
+        <apply executable="java" output="${temp.dir}/out.log" parallel="false" dest="${temp.dir}">
             <fileset dir="${temp.dir}" includes="**/*.js" />
             <arg line="-jar"/>
             <arg path="${yuicompressor.loc}" />
@@ -70,13 +71,39 @@
             <mapper type="glob" from="*.js" to="*-min.js"/>
             <targetfile/>
         </apply>
-        <move todir="${release.loc}" overwrite="true">
+        <!--        <move todir="${release.loc}" overwrite="true">
             <fileset dir="${temp.dir}" />
             <mapper type="glob" from="*-min.js" to="*.js"/>
-        </move>
-        <echo>Done compressing javascript files!</echo>
+        </move>-->
+        
+        <echo>Done compressing javascript files ...</echo>                
+    </target>
+
+    <target name="concat" depends="init">
+        <echo>Concatenating javascript files</echo>
+        <concat destfile="${release.dir}/main.js" fixlastline="yes">
+            <fileset dir="${temp.dir}" includes="**/*.js" />
+        </concat>
+        <echo>Done concatenating javascript files!</echo>
     </target>
     
+    <target name="uglify" depends="init">
+        <apply executable="uglifyjs.cmd" parallel="false" dir="${temp.dir}">
+            <arg value="-o ${release.dir}"/>            
+            <srcfile/>
+            
+            <fileset dir="${temp.dir}" includes="*.js">
+                <exclude name="test/**"></exclude>
+            </fileset>
+        </apply> 
+        <!--        <exec dir="${temp.dir}" executable="uglifyjs-folder.cmd">
+            <arg line="${temp.dir} -e -o ${release.dir}"/>
+        </exec>-->
+        <!--        <exec dir="${temp.dir}" executable="uglifyjs-folder.cmd">
+            <arg line="${temp.dir} -o ${release.dir}/main.min.js"/>
+        </exec>-->
+    </target>
+            
     <target name="install_modules" depends="init">
         <echo>Installing node modules ...</echo>
         <exec dir="${temp.dir}" executable="npm.cmd" failonerror="true">
@@ -141,9 +168,9 @@
         <echo>Starting deployment via FTP ...</echo>
         <echo>Deploying to: ${ftp.server}:${ftp.port}</echo>
         <ftp server="${ftp.server}"
-            userid="${ftp.user}"
-            password="${ftp.password}"
-            port="${ftp.port}">
+             userid="${ftp.user}"
+             password="${ftp.password}"
+             port="${ftp.port}">
             <fileset dir="${release.dir}"/>
         </ftp>
         <echo>Deployment done!</echo>

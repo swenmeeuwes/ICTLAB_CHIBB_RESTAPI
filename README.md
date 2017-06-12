@@ -17,7 +17,7 @@ These packages can be installed by running the `npm install` command in the root
 A node application that uses Express to act as the CHIBB house sensor API
 ### Setup
 The Webservice makes use of different node packages.
-These packages can be installed by running the `npm install` command in the root folder.
+These packages can be installed by running the `npm install` command in the root/src/ folder.
 ### Configuration
 The Webservice can be configured by editing the config files in the 'config' folder.
 The `default.json` acts as a configuration file for the local environment.

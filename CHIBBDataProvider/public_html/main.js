@@ -85,7 +85,7 @@ function setBatteryLife() {
 
 function setData() {
     for (var i = 0; i < sensors.length; i++) {
-        if (batteryLevels[i] > 0)
+        if (batteryLevels[i] > -1)
             recordBatch.push(sensors[i]);
     }
 }

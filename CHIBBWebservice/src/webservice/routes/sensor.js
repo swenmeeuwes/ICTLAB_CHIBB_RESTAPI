@@ -60,7 +60,7 @@ router.get('/house/:id', function (req, res) {
  * @apiSuccess {String[]} attributes The attributes that the Sensor tracks.
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.0 200 OK
+ *     HTTP/1.1 200 OK
  *     {
  *       "statusCode": 200,
  *       "statusMessage": "OK",
@@ -83,7 +83,7 @@ router.get('/house/:id', function (req, res) {
  * @apiError SensorNotFound The id of the Sensor was not found.
  *
  * @apiErrorExample Error-Response:
- *     HTTP/1.0 404 Not Found
+ *     HTTP/1.1 404 Not Found
  *     {
  *       "statusCode": 404,
  *       "statusMessage": "Not Found"
@@ -113,7 +113,7 @@ router.get('/id/:id', function (req, res) {
  * @apiSuccess {String} status The current status of the requested sensor: Clean (sensor does not exists), Active (running), Intermittent failures (no data for 3 sec), Inactive (no data for 30 sec).
  *
  * @apiSuccessExample Success-Response (sensor exists and has data):
- *     HTTP/1.0 200 OK
+ *     HTTP/1.1 200 OK
  *      {
  *          "statusCode": 200,
  *          "statusMessage": "OK",
@@ -125,7 +125,7 @@ router.get('/id/:id', function (req, res) {
  *      }   
  *
  *  @apiSuccessExample Success-Response (sensor is clean):
- *     HTTP/1.0 200 OK
+ *     HTTP/1.1 200 OK
  *      {
  *          "statusCode": 200,
  *          "statusMessage": "OK",
@@ -170,7 +170,7 @@ router.get('/latest/:id', function(req, res){
  * @apiSuccess {Number} resultLength Length of the result array.
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.0 200 OK
+ *     HTTP/1.1 200 OK
  *     {
  *       "statusCode": 200,
  *       "statusMessage": "OK",
@@ -192,7 +192,7 @@ router.get('/latest/:id', function(req, res){
  * @apiError SensorNotFound The id of the Sensor was not found.
  *
  * @apiErrorExample Error-Response:
- *     HTTP/1.0 404 Not Found
+ *     HTTP/1.1 404 Not Found
  *     {
  *       "statusCode": 404,
  *       "statusMessage": "Not Found"
@@ -221,7 +221,7 @@ router.get('/data/:id/:fromTime/:toTime', function(req, res){
  * @apiSuccess {Number} resultLength Length of the result array.
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.0 200 OK
+ *     HTTP/1.1 200 OK
  *     {
  *       "statusCode": 200,
  *       "statusMessage": "OK",
@@ -243,7 +243,7 @@ router.get('/data/:id/:fromTime/:toTime', function(req, res){
  * @apiError SensorNotFound The id of the Sensor was not found.
  *
  * @apiErrorExample Error-Response:
- *     HTTP/1.0 404 Not Found
+ *     HTTP/1.1 404 Not Found
  *     {
  *       "statusCode": 404,
  *       "statusMessage": "Not Found"

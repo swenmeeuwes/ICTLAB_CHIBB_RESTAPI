@@ -28,8 +28,6 @@ var userModel = require('../models/user-model');
 //  next()
 //});
 
-//{username:{username},password:{password}, email: {email}, salt: {salt}, secret: {secret}}
-
 /**
  * @api {post} /user/ Register a User
  * @apiVersion 0.0.1
@@ -95,7 +93,10 @@ router.post('/register', function (req, res) {
  * @apiVersion 0.0.1
  * @apiName LoginUser
  * @apiGroup User
- *
+ * 
+ * @apiParam {String} username Username of the User.
+ * @apiParam {String} password Password of the User.
+ * 
  * @apiSuccess {Number} statusCode The reponse status code.
  * @apiSuccess {String} statusMessage A readable response status code.
  * @apiSuccess {String} username The username of the newly created user.

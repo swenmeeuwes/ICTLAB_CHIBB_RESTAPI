@@ -283,10 +283,10 @@ router.get('/data/:id', function (req, res, next) {
  * @apiSuccess {String[]} attributes The attributes that the newly created Sensor tracks.
  *
  * @apiSuccessExample Success-Response:
- *     HTTP/1.1 200 OK
+ *     HTTP/1.1 201 Created
  *     {
- *       "statusCode": 200,
- *       "statusMessage": "OK",
+ *       "statusCode": 201,
+ *       "statusMessage": "Created",
  *       "result": [
  *          {
  *              "sid": "2ke98E37YeVh",

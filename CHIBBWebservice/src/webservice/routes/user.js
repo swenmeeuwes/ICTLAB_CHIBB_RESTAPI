@@ -28,6 +28,39 @@ var userModel = require('../models/user-model');
 //  next()
 //});
 
+/**
+ * @api {post} /user/ Register a User
+ * @apiVersion 0.0.1
+ * @apiName RegisterUser
+ * @apiGroup User
+ *
+ * @apiSuccess {Number} statusCode The reponse status code.
+ * @apiSuccess {String} statusMessage A readable response status code.
+ * @apiSuccess {String} username The username of the newly created user.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 201 Created
+ *     {
+ *       "statusCode": 201,
+ *       "statusMessage": "Created",
+ *       "result": [
+ *          {
+ *              "username": "chibb_user"
+ *          }
+ *       ],
+ *       "resultLength": 1
+ *     }
+ *
+ * @apiError UsernameAlreadyInUse A User with the provided username already exists!
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 409 Conflict
+ *     {
+ *       "statusCode": 409,
+ *       "statusMessage": "Conflict",
+ *       "message": "Username already in use!"
+ *     }
+ */
 router.post('/register', function (req, res) {
     var requestBody = req.body;
     var salt = randomString.generate(16);
@@ -51,6 +84,49 @@ router.post('/register', function (req, res) {
     });
 });
 
+/**
+ * @api {post} /user/ Login as a User
+ * @apiVersion 0.0.1
+ * @apiName LoginUser
+ * @apiGroup User
+ *
+ * @apiSuccess {Number} statusCode The reponse status code.
+ * @apiSuccess {String} statusMessage A readable response status code.
+ * @apiSuccess {String} username The username of the newly created user.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "statusCode": 200,
+ *       "statusMessage": "OK",
+ *       "result": [
+ *          {
+ *              "token": "a nicely composed token"
+ *          }
+ *       ],
+ *       "resultLength": 1
+ *     }
+ *
+ * @apiError UserNotFound No User with the provided username was found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "statusCode": 404,
+ *       "statusMessage": "Not Found",
+ *       "message": "No such user found!"
+ *     }
+ *     
+ * @apiError NotAuthorized The provided password didn't match the Users password
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 401 Unauthorized
+ *     {
+ *       "statusCode": 401,
+ *       "statusMessage": "Unauthorized",
+ *       "message": "Wrong password"
+ *     }
+ */
 router.post('/login', function (req, res) {
     var username = req.body.username;
     var password = req.body.password;

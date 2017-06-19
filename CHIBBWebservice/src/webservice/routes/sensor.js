@@ -80,7 +80,7 @@ router.get('/house/:id', function (req, res) {
  *       "resultLength": 1
  *     }
  *
- * @apiError SensorNotFound The id of the Sensor was not found.
+ * @apiError SensorNotFound No Sensor with the provided Id was found.
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
@@ -134,7 +134,16 @@ router.get('/id/:id', function (req, res) {
  *              "status": "Clean",
  *              "batteryLevel": null
  *          }
- *      }   
+ *      }
+ *      
+ * @apiError SensorNotFound No Sensor with the provided Id was found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "statusCode": 404,
+ *       "statusMessage": "Not Found"
+ *     }
  *
  */
 router.get('/status/:id', function (req, res) {
@@ -240,7 +249,7 @@ router.get('/data/:id/:fromTime/:toTime', function(req, res){
  *       "resultLength": 2
  *     }
  *
- * @apiError SensorNotFound The id of the Sensor was not found.
+ * @apiError SensorNotFound No Sensor with the provided id was not found.
  *
  * @apiErrorExample Error-Response:
  *     HTTP/1.1 404 Not Found
@@ -259,6 +268,52 @@ router.get('/data/:id', function (req, res, next) {
     });
 });
 
+/**
+ * @api {post} /sensor/ Create a Sensor
+ * @apiVersion 0.0.1
+ * @apiName CreateSensor
+ * @apiGroup Sensor
+ *
+ * @apiSuccess {Number} statusCode The reponse status code.
+ * @apiSuccess {String} statusMessage A readable response status code.
+ * @apiSuccess {String} sid The unique identifier of the newly created Sensor.
+ * @apiSuccess {String} hid The unique identifier of the House that the newly created Sensor is linked to.
+ * @apiSuccess {String} location The human-readable location of the newly created Sensor.
+ * @apiSuccess {String} type The type of the newly created Sensor.
+ * @apiSuccess {String[]} attributes The attributes that the newly created Sensor tracks.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "statusCode": 200,
+ *       "statusMessage": "OK",
+ *       "result": [
+ *          {
+ *              "sid": "2ke98E37YeVh",
+ *              "hid": "i3djTejk35e82",
+ *              "location": "Livingroom",
+ *              "type": "Temperature",
+ *              "attributes": [
+ *                  "timestamp",
+ *                  "unit",
+ *                  "value"
+ *              ]
+ *          }
+ *       ],
+ *       "resultLength": 1
+ *     }
+ *
+ * @apiError SensorNotFound A sensor with this id already exists.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "statusCode": 200,
+ *       "statusMessage": "OK",
+ *       "result": { },
+ *       "warningMessage": "Sensor with that Id already exists!"
+ *     }
+ */
 router.post('/', function (req, res) {
     var createPromise = sensorModel.createSensor(dbConnector.getSession(req), res.locals.username, req.body);
     createPromise.then(function (data) {
@@ -269,6 +324,52 @@ router.post('/', function (req, res) {
     });
 }); // Maybe error handler middleware? only next if error
 
+/**
+ * @api {put} /sensor/:id Update a Sensor
+ * @apiVersion 0.0.1
+ * @apiName UpdateSensorById
+ * @apiGroup Sensor
+ *
+ * @apiParam {String} id Sensors unique ID.
+ *
+ * @apiSuccess {Number} statusCode The reponse status code.
+ * @apiSuccess {String} statusMessage A readable response status code.
+ * @apiSuccess {String} sid The new unique identifier of the Sensor.
+ * @apiSuccess {String} hid The new unique identifier of the House.
+ * @apiSuccess {String} location The new human-readable location of the Sensor.
+ * @apiSuccess {String} type The new type of the Sensor.
+ * @apiSuccess {String[]} attributes The new attributes that the Sensor tracks.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "statusCode": 200,
+ *       "statusMessage": "OK",
+ *       "result": [
+ *          {
+ *              "sid": "2ke98E37YeVh",
+ *              "hid": "i3djTejk35e82",
+ *              "location": "Livingroom",
+ *              "type": "Temperature",
+ *              "attributes": [
+ *                  "timestamp",
+ *                  "unit",
+ *                  "value"
+ *              ]
+ *          }
+ *       ],
+ *       "resultLength": 1
+ *     }
+ *
+ * @apiError SensorNotFound No Sensor with the provided Id was found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "statusCode": 404,
+ *       "statusMessage": "Not Found"
+ *     }
+ */
 router.put('/:id', function (req, res) {
     var updatePromise = sensorModel.updateSensor(dbConnector.getSession(req), res.locals.username, req.params.id, req.body);
     updatePromise.then(function (data) {
@@ -278,6 +379,52 @@ router.put('/:id', function (req, res) {
     });
 });
 
+/**
+ * @api {delete} /sensor/:id Delete a Sensor
+ * @apiVersion 0.0.1
+ * @apiName DeleteSensorById
+ * @apiGroup Sensor
+ *
+ * @apiParam {String} id Sensors unique ID.
+ *
+ * @apiSuccess {Number} statusCode The reponse status code.
+ * @apiSuccess {String} statusMessage A readable response status code.
+ * @apiSuccess {String} sid The unique identifier of the deleted Sensor.
+ * @apiSuccess {String} hid The unique identifier of the House that the deleted Sensor was linked to.
+ * @apiSuccess {String} location The human-readable location of the deleted Sensor.
+ * @apiSuccess {String} type The type of the deleted Sensor.
+ * @apiSuccess {String[]} attributes The attributes that the deleted Sensor tracked.
+ *
+ * @apiSuccessExample Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "statusCode": 200,
+ *       "statusMessage": "OK",
+ *       "result": [
+ *          {
+ *              "sid": "2ke98E37YeVh",
+ *              "hid": "i3djTejk35e82",
+ *              "location": "Livingroom",
+ *              "type": "Temperature",
+ *              "attributes": [
+ *                  "timestamp",
+ *                  "unit",
+ *                  "value"
+ *              ]
+ *          }
+ *       ],
+ *       "resultLength": 1
+ *     }
+ *
+ * @apiError SensorNotFound No Sensor with the provided Id was found.
+ *
+ * @apiErrorExample Error-Response:
+ *     HTTP/1.1 404 Not Found
+ *     {
+ *       "statusCode": 404,
+ *       "statusMessage": "Not Found"
+ *     }
+ */
 router.delete('/:id', function (req, res) {
     var deletePromise = sensorModel.deleteSensor(dbConnector.getSession(req), res.locals.username, req.params.id);
     deletePromise.then(function (data) {

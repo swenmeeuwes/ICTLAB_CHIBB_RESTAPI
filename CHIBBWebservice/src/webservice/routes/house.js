@@ -74,6 +74,9 @@ router.get('/:id', function(req, res){
  * @apiVersion 0.0.1
  * @apiName CreateHouseById
  * @apiGroup House
+ * 
+ * @apiParam {String} hid House unique ID.
+ * @apiParam {String} address The address of the House.
  *
  * @apiSuccess {Number} statusCode The reponse status code.
  * @apiSuccess {String} statusMessage A readable response status code.
@@ -118,7 +121,8 @@ router.post('/', function(req, res){
  * @apiName UpdateHouseById
  * @apiGroup House
  *
- * @apiParam {String} id House unique ID.
+ * @apiParam {String} hid House unique ID.
+ * @apiParam {String} address The address of the House.
  *
  * @apiSuccess {Number} statusCode The reponse status code.
  * @apiSuccess {String} statusMessage A readable response status code.

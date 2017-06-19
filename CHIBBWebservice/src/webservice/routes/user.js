@@ -28,11 +28,17 @@ var userModel = require('../models/user-model');
 //  next()
 //});
 
+//{username:{username},password:{password}, email: {email}, salt: {salt}, secret: {secret}}
+
 /**
  * @api {post} /user/ Register a User
  * @apiVersion 0.0.1
  * @apiName RegisterUser
  * @apiGroup User
+ * 
+ * @apiParam {String} username Username of the User.
+ * @apiParam {String} password Password of the User.
+ * @apiParam {String} email E-mail of the User.
  *
  * @apiSuccess {Number} statusCode The reponse status code.
  * @apiSuccess {String} statusMessage A readable response status code.
